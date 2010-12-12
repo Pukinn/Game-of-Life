@@ -53,10 +53,10 @@ public class gameOfLive
 		
 		while (true)
 		{
-			try { Thread.sleep(40);}
+			try { Thread.sleep(30);}
 			catch (InterruptedException e) {}
 			
-			myGUI.myArea.nextGeneration(1);	
+			myGUI.myArea.nextGeneration(0);	
 		}
 	
 		

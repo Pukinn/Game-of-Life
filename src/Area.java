@@ -7,7 +7,7 @@ import javax.swing.JPanel;
 
 public class Area extends JPanel
 {
-	private static final long serialVersionUID = 1L;
+	private static final long serialVersionUID = -3943138899203200607L;
 
 	public Field[][] fieldArea;
 	
@@ -21,14 +21,12 @@ public class Area extends JPanel
 
 	
 	public Area(int _posx, int _posy, int _fieldsx, int _fieldsy, int _fieldsize)
-	{
-		this.setLayout(null);
-		
+	{	
 		iBorderX = _posx;
 		iBorderY = _posy;
 		
-		iFieldsX = _fieldsx+2;
-		iFieldsY = _fieldsy+2;
+		iFieldsX = _fieldsx;
+		iFieldsY = _fieldsy;
 		iFieldsize = _fieldsize;
 		
 		fieldArea = new Field[iFieldsX][iFieldsY];
@@ -40,10 +38,6 @@ public class Area extends JPanel
 				fieldArea[iX][iY] = new Field(0);
 			}
 		}
-		
-		
-		
-		
 	}
 	
 	
@@ -51,10 +45,9 @@ public class Area extends JPanel
 	public void paint(Graphics g)
 	{	
 		
-		
-		for (int iY = 1; iY < iFieldsY-1; iY++)
+		for (int iY = 0; iY < iFieldsY; iY++)
 		{
-			for (int iX = 1; iX < iFieldsX-1; iX++)
+			for (int iX = 0; iX < iFieldsX; iX++)
 			{
 				int iLifestate = fieldArea[iX][iY].lifestate();
 				if (iLifestate == 0)
@@ -103,9 +96,9 @@ public class Area extends JPanel
 		
 	//	System.out.println("set random");
 		
-		for (int iX = (int)((iFieldsX+1)*_xMin); iX < (int)((iFieldsX+1)*_xMax); iX++)
+		for (int iX = (int)(iFieldsX*_xMin); iX < (int)(iFieldsX*_xMax); iX++)
 		{
-			for (int iY = (int)((iFieldsY+1)*_yMin); iY < (int)((iFieldsY+1)*_yMax); iY++)
+			for (int iY = (int)(iFieldsY*_yMin); iY < (int)(iFieldsY*_yMax); iY++)
 			{
 				
 				fieldArea[iX][iY].setRandom(_lifeValue);
@@ -120,63 +113,21 @@ public class Area extends JPanel
 	{
 	
 		
-		fieldArea[5][4].grow();
-		fieldArea[5][5].grow();
-		fieldArea[5][6].grow();
+	//	fieldArea[5][4].grow();
+	//	fieldArea[5][5].grow();
+	//	fieldArea[5][6].grow();
 		
-	//	fieldArea[3][2].grow();
-	//	fieldArea[4][3].grow();
-	//	fieldArea[2][4].grow();
-	//	fieldArea[3][4].grow();
-	//	fieldArea[4][4].grow();
+		fieldArea[3][2].grow();
+		fieldArea[4][3].grow();
+		fieldArea[2][4].grow();
+		fieldArea[3][4].grow();
+		fieldArea[4][4].grow();
 		
 		this.repaint();
 	}
 	
 	public void nextGeneration(int _gameRule)
 	{
-
-		/*
-		game Rule 0 = border-neighborship
-		game Rule 1 = solid-border
-		*/
-
-	// SET BORDER / GAMERULES
-		if (_gameRule == 1)
-		{
-			// TOP & BOTTOM
-			for (int iX=0; iX < iFieldsX; iX++)
-			{
-				fieldArea[iX][0].kill();
-				fieldArea[iX][iFieldsY-1].kill();
-			}
-			// LEFT & RIGHT
-			for (int iY=1; iY < iFieldsY-1; iY++)
-			{
-				fieldArea[0][iY].kill();
-				fieldArea[iFieldsX-1][iY].kill();
-			}
-		}
-		else if (_gameRule == 0)
-		{
-			// TOP & BOTTOM
-			for (int iX=1; iX < iFieldsX-1; iX++)
-			{
-				fieldArea[iX][0].setState(fieldArea[iX][iFieldsY-2].lifestate());
-				fieldArea[iX][iFieldsY-1].setState(fieldArea[iX][1].lifestate());
-			}
-			// LEFT & RIGHT
-			for (int iY=1; iY < iFieldsY-1; iY++)
-			{
-				fieldArea[0][iY].setState(fieldArea[iFieldsX-2][iY].lifestate());
-				fieldArea[iFieldsX-1][iY].setState(fieldArea[1][iY].lifestate());
-			}
-
-			fieldArea[0][0].setState(fieldArea[iFieldsX-2][iFieldsY-2].lifestate());
-			fieldArea[iFieldsX-1][0].setState(fieldArea[1][iFieldsY-2].lifestate());
-			fieldArea[iFieldsX-1][iFieldsY-1].setState(fieldArea[1][1].lifestate());
-			fieldArea[0][iFieldsY-1].setState(fieldArea[iFieldsX-2][1].lifestate());
-		}	
 		
 	// CLEAR NEIGHBORS
 		for (int iY=0; iY < iFieldsY; iY++)
@@ -188,29 +139,29 @@ public class Area extends JPanel
 		}
 
 	// SET NEIGHBORS
-		for (int iY=1; iY < iFieldsY-1; iY++)
+		for (int iY=0; iY < iFieldsY; iY++)
 		{	
-			for (int iX=1; iX < iFieldsX-1; iX++)
+			for (int iX=0; iX < iFieldsX; iX++)
 			{
-
-				if (fieldArea[iX][iY].lifestate() == 1)
-				{	
-		        	fieldArea[iX-1][iY-1].addNeighbor(1);	//left-top
-		        	fieldArea[iX][iY-1].addNeighbor(1);		//center-top
-		        	fieldArea[iX+1][iY-1].addNeighbor(1);	//right-top
-		        	fieldArea[iX-1][iY].addNeighbor(1);		//left
-		        	fieldArea[iX+1][iY].addNeighbor(1);		//right
-		        	fieldArea[iX-1][iY+1].addNeighbor(1);	//left-bottom
-		        	fieldArea[iX][iY+1].addNeighbor(1);		//center-bottom
-		        	fieldArea[iX+1][iY+1].addNeighbor(1);	//right-bottom
-				}	
+	
+				int lifestate = fieldArea[iX][iY].lifestate();
+				
+				addNeighbors(_gameRule, iX-1, iY-1, lifestate);	// left-top
+				addNeighbors(_gameRule, iX, iY-1, lifestate);	// top
+				addNeighbors(_gameRule, iX+1, iY-1, lifestate);	// right-top
+				addNeighbors(_gameRule, iX-1, iY, lifestate);	// left
+				addNeighbors(_gameRule, iX+1, iY, lifestate);	// right
+				addNeighbors(_gameRule, iX-1, iY+1, lifestate);	// left-bottom
+				addNeighbors(_gameRule, iX, iY+1, lifestate);	// bottom
+				addNeighbors(_gameRule, iX+1, iY+1, lifestate);	// right-bottom
+					
 			}
 		}
-				
+			
 	
-		for (int iY=1; iY < iFieldsY-1; iY++)
+		for (int iY=0; iY < iFieldsY; iY++)
 		{
-			for (int iX=1; iX < iFieldsX-1; iX++)
+			for (int iX=0; iX < iFieldsX; iX++)
 			{
 				fieldArea[iX][iY].killbirth(2, 3, 3, 3);
 			}
@@ -220,5 +171,26 @@ public class Area extends JPanel
 		this.repaint();
 	}
 	
+	public void addNeighbors(int _rule, int _x, int _y, int _add)
+	{
+		if (_rule == 0) // torus
+		{
+			int iX = (_x+iFieldsX)%iFieldsX;
+			int iY = (_y+iFieldsY)%iFieldsY;
+			
+			fieldArea[iX][iY].addNeighbor(_add);
+		}
+		else if (_rule == 1) // solid
+		{
+			if ((0 < _x && _x < iFieldsX) && (0 < _y && _y < iFieldsY))
+			{
+				fieldArea[_x][_y].addNeighbor(_add);
+			}
+		}
+		else
+		{
+			System.err.println("Fehler: Falscher Regelsatz!");
+		}
+	}
 	
 }
