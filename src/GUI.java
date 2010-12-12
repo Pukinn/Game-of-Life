@@ -9,11 +9,12 @@ public class GUI implements ActionListener
 {
 	
 	private static final int I_FIELDSIZE = 5;
-	private static final int I_FIELDS_X = 220;
-	private static final int I_FIELDS_Y = 100;
+	private static final int I_FIELDS_X = 250;
+	private static final int I_FIELDS_Y = 140;
 
 	private boolean bRun;
 	private int iRuleset;
+	private int iSpeed;
 	
 	private JFrame frame;
 	
@@ -24,8 +25,12 @@ public class GUI implements ActionListener
 	private JButton buttonRandom;
 	private JButton buttonClear;
 	private JButton buttonStart;
+	private JButton buttonSetSpeed;
 	
 	private JLabel labelRuleset;
+	
+	private JLabel labelSpeed;
+	private JTextField fieldSpeed;
 
 	private JPanel panel;
 	
@@ -35,6 +40,7 @@ public class GUI implements ActionListener
 	{
 		bRun = false;
 		iRuleset = 0; // Default: torus
+		iSpeed = 100; // Default speed
 	}
 	
 	
@@ -60,6 +66,7 @@ public class GUI implements ActionListener
 	// MENU	
 		panel = new JPanel();
 		
+		// ruleset
 		labelRuleset = new JLabel("Regelsatz: Toruswelt");
 		panel.add(labelRuleset);
 		
@@ -67,20 +74,36 @@ public class GUI implements ActionListener
 		buttonRuleset.addActionListener(this);
 		panel.add(buttonRuleset);
 		
+		// random
 		buttonRandom = new JButton("Zufällig");
 		buttonRandom.addActionListener(this);
 		panel.add(buttonRandom);
 		
+		// clear
 		buttonClear = new JButton("Leeren");
 		buttonClear.addActionListener(this);
 		panel.add(buttonClear);
 	
+		// start / stop
 		buttonStart = new JButton("Start");
 		buttonStart.addActionListener(this);
 		panel.add(buttonStart);
 		
+		// speed
+		labelSpeed = new JLabel("Generationen/Sekunde:");
+		panel.add(labelSpeed);
+		
+		fieldSpeed = new JTextField(4);
+		fieldSpeed.addActionListener(this);
+		fieldSpeed.setText("10");
+		panel.add(fieldSpeed);
+		
+		buttonSetSpeed = new JButton("Setzen");
+		buttonSetSpeed.addActionListener(this);
+		panel.add(buttonSetSpeed);
+		
+		
 		frame.add(panel, BorderLayout.PAGE_END);
-	    
 		frame.pack();
 	}
 	
@@ -100,6 +123,11 @@ public class GUI implements ActionListener
 		return iRuleset;
 	}
 	
+	public int speed()
+	{
+		return iSpeed;
+	}
+	
 	
 
 	public void actionPerformed(ActionEvent event) {
@@ -117,7 +145,7 @@ public class GUI implements ActionListener
 		}
 		else if (event.getActionCommand().equals("Zufällig"))
 		{
-			myArea.setRandom(0.45, 0.55, 0.45, 0.55, 0.3);
+			myArea.setRandom(0.4, 0.6, 0.4, 0.6, 0.3);
 		}
 		else if (event.getActionCommand().equals("Leeren"))
 		{
@@ -132,6 +160,28 @@ public class GUI implements ActionListener
 		{
 			bRun = false;
 			buttonStart.setText("Start");
+		}
+		else if (event.getActionCommand().equals("Setzen"))
+		{
+			try
+			{
+				int speed = 1000/Integer.parseInt(fieldSpeed.getText());
+				
+				if (speed < 1)
+				{
+					System.err.println("Fehler: keine Gültige Geschwindigkeit!");
+					fieldSpeed.setText("error");
+				}
+				else
+				{
+					iSpeed = speed;
+				}
+			}
+			catch (Exception e)
+			{
+				System.err.println("Fehler: keine Gültige Geschwindigkeit!");
+				fieldSpeed.setText("error");
+			}
 		}
 		
 		

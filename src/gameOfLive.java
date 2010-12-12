@@ -47,7 +47,7 @@ public class gameOfLive
 		
 		while (true)
 		{
-			try { Thread.sleep(30);}
+			try { Thread.sleep(myGUI.speed());}
 			catch (InterruptedException e) {}
 			
 			if (myGUI.run())
