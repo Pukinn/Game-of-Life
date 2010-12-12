@@ -8,77 +8,80 @@ import javax.swing.*;
 public class GUI implements ActionListener
 {
 	
-	public static final int I_FIELDSIZE = 5;
-	public static final int I_BORDER = 15;
-	public static final int I_FIELDS_X = 220;
-	public static final int I_FIELDS_Y = 100;
-	public static final int I_MENU_HEIGHT = 80;
+	private static final int I_FIELDSIZE = 5;
+	private static final int I_FIELDS_X = 220;
+	private static final int I_FIELDS_Y = 100;
 
-	public JFrame frame;
+	private boolean bRun;
+	private int iRuleset;
 	
-	public Field [][] fieldArea;
+	private JFrame frame;
+	
+
 	public  Area myArea;
 	
-	JButton buttonRandom;
-	JPanel panel;
+	private JButton buttonRuleset;
+	private JButton buttonRandom;
+	private JButton buttonClear;
+	private JButton buttonStart;
 	
-	public int iFrameWidth;
-	public int iFrameHeight;
+	private JLabel labelRuleset;
+
+	private JPanel panel;
+	
 
 	
 	public GUI()
 	{
-		iFrameWidth = (I_FIELDS_X*I_FIELDSIZE + I_BORDER*2)+10;
-		iFrameHeight = (I_FIELDS_Y*I_FIELDSIZE + I_BORDER*2)+30+I_MENU_HEIGHT;
+		bRun = false;
+		iRuleset = 0; // Default: torus
 	}
-	
 	
 	
 	public void createFrame()
 	{
+	// CREATE FRAME
 		frame = new JFrame();
-		panel = new JPanel();
-		
+		frame.setLayout(new BorderLayout(0,0));
 		
 		frame.setTitle("Game of Live");
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+
 		
-		// center frame
-		Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
-	    int iPosXFrame = (screenSize.width - iFrameWidth) / 2;
-		int iPosYFrame = (screenSize.height - iFrameHeight) / 2;
-	    frame.setSize(iFrameWidth, iFrameHeight);
-	    frame.setLocation(iPosXFrame, iPosYFrame);
-	    
-	    frame.add(panel);
-	    System.out.println("width: "+iFrameWidth);
-	    System.out.println("frame: "+frame.getWidth());
-	}
-	
-	
-	
-	public void createGameField()
-	{
-	
-		myArea = new Area(I_BORDER, I_BORDER, I_FIELDS_X,I_FIELDS_Y,I_FIELDSIZE);
+	// AREA	
+		myArea = new Area(I_FIELDS_X,I_FIELDS_Y,I_FIELDSIZE);
 		
-		frame.add(myArea);
+		Dimension dimArea = new Dimension(I_FIELDS_X*I_FIELDSIZE,I_FIELDS_Y*I_FIELDSIZE);
+		myArea.setPreferredSize(dimArea);
 		
-		myArea.setBackground(Color.black);
-	}
-	
-	
-	
-	public void menu()
-	{
+		frame.add(myArea, BorderLayout.CENTER);
+		
+		
+	// MENU	
+		panel = new JPanel();
+		
+		labelRuleset = new JLabel("Regelsatz: Toruswelt");
+		panel.add(labelRuleset);
+		
+		buttonRuleset = new JButton("Fester Rand");
+		buttonRuleset.addActionListener(this);
+		panel.add(buttonRuleset);
+		
 		buttonRandom = new JButton("Zufällig");
-
-		
-		
 		buttonRandom.addActionListener(this);
-
-		
 		panel.add(buttonRandom);
+		
+		buttonClear = new JButton("Leeren");
+		buttonClear.addActionListener(this);
+		panel.add(buttonClear);
+	
+		buttonStart = new JButton("Start");
+		buttonStart.addActionListener(this);
+		panel.add(buttonStart);
+		
+		frame.add(panel, BorderLayout.PAGE_END);
+	    
+		frame.pack();
 	}
 	
 	public void show()
@@ -87,10 +90,50 @@ public class GUI implements ActionListener
 	}
 
 
+	public boolean run()
+	{
+		return bRun;
+	}
+	
+	public int ruleset()
+	{
+		return iRuleset;
+	}
+	
+	
 
-	@Override
-	public void actionPerformed(ActionEvent arg0) {
-		System.out.println("button pressed");
+	public void actionPerformed(ActionEvent event) {
+		if (event.getActionCommand().equals("Fester Rand"))
+		{
+			iRuleset = 1;
+			buttonRuleset.setText("Toruswelt");
+			labelRuleset.setText("Regelsatz: Fester Rand");
+		}
+		else if (event.getActionCommand().equals("Toruswelt"))
+		{
+			iRuleset = 0;
+			buttonRuleset.setText("Fester Rand");
+			labelRuleset.setText("Regelsatz: Toruswelt");
+		}
+		else if (event.getActionCommand().equals("Zufällig"))
+		{
+			myArea.setRandom(0.45, 0.55, 0.45, 0.55, 0.3);
+		}
+		else if (event.getActionCommand().equals("Leeren"))
+		{
+			myArea.clear();
+		}
+		else if (event.getActionCommand().equals("Start"))
+		{
+			bRun = true;
+			buttonStart.setText("Stop");
+		}
+		else if (event.getActionCommand().equals("Stop"))
+		{
+			bRun = false;
+			buttonStart.setText("Start");
+		}
+		
 		
 	}
 

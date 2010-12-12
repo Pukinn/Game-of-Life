@@ -1,4 +1,5 @@
 import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.Graphics;
 
 import javax.swing.JPanel;
@@ -11,8 +12,7 @@ public class Area extends JPanel
 
 	public Field[][] fieldArea;
 	
-	public int iBorderX;
-	public int iBorderY;
+	public Dimension dimArea;
 	
 	public int iFieldsX;
 	public int iFieldsY;
@@ -20,10 +20,13 @@ public class Area extends JPanel
 	
 
 	
-	public Area(int _posx, int _posy, int _fieldsx, int _fieldsy, int _fieldsize)
+	public Area(int _fieldsx, int _fieldsy, int _fieldsize)
 	{	
-		iBorderX = _posx;
-		iBorderY = _posy;
+	//	dimArea = new Dimension(iFieldsX*iFieldsize,iFieldsY*iFieldsize);
+		
+	//	this.setLayout(new BorderLayout(10,10));
+	//	this.setPreferredSize(dimArea);
+
 		
 		iFieldsX = _fieldsx;
 		iFieldsY = _fieldsy;
@@ -64,8 +67,8 @@ public class Area extends JPanel
 				}
 				
 				
-				int iPosX = (iX-1)*iFieldsize+iBorderX;
-				int iPosY = (iY-1)*iFieldsize+iBorderY;
+				int iPosX = (iX-1)*iFieldsize;
+				int iPosY = (iY-1)*iFieldsize;
 				
 				g.fillRect(iPosX, iPosY, iFieldsize, iFieldsize);
 				
@@ -109,19 +112,14 @@ public class Area extends JPanel
 		this.repaint();
 	}
 	
-	public void drawGlider()
+	public void drawGlider(int _posx, int _posy)
 	{
-	
-		
-	//	fieldArea[5][4].grow();
-	//	fieldArea[5][5].grow();
-	//	fieldArea[5][6].grow();
-		
-		fieldArea[3][2].grow();
-		fieldArea[4][3].grow();
-		fieldArea[2][4].grow();
-		fieldArea[3][4].grow();
-		fieldArea[4][4].grow();
+
+		fieldArea[_posx+1][_posy].grow();
+		fieldArea[_posx+2][_posy+1].grow();
+		fieldArea[_posx+2][_posy+2].grow();
+		fieldArea[_posx+1][_posy+2].grow();
+		fieldArea[_posx][_posy+2].grow();
 		
 		this.repaint();
 	}

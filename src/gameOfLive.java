@@ -1,62 +1,59 @@
-import java.util.Scanner;
-
-
-
 
 
 public class gameOfLive
 {
 
 	public static GUI myGUI;
-	
-	
+
 	
 	public static void main(String args[])
 	{
 		
 		myGUI = new GUI();
 		
-	// ASK FOR MODE
-		Scanner myScanner = new Scanner(System.in);
-		System.out.println("Startfläche setzen:\nZufällig (0)\nGleiter(1)");
-		int iSetrandom = myScanner.nextInt();
 		
 	// CREATE FIELD
-		myGUI.createFrame();
-		myGUI.createGameField();
-		//	myGUI.menu();
+		myGUI.createFrame();		
+		myGUI.show();
 		
-		
+		/*
 		if (iSetrandom == 0)
 		{
 			myGUI.myArea.setRandom(0.45, 0.55, 0.45, 0.55, 0.3);
 		}
 		else if (iSetrandom == 1)
 		{
-			myGUI.myArea.drawGlider();
+			myGUI.myArea.drawGlider(5,5);
+			myGUI.myArea.drawGlider(15,5);
+			myGUI.myArea.drawGlider(25,5);
+			myGUI.myArea.drawGlider(35,5);
+			myGUI.myArea.drawGlider(45,5);
 		}
 		else
 		{
 			System.out.println("Fehler: Keine gültige Spielfläche!");
 		}
-		
-		
-		myGUI.show();
-		
+		*/
 		
 		
 		
-
-		try { Thread.sleep(1000); }
+		
+		
+		
+/*
+		try { Thread.sleep(10000); }
 		catch (InterruptedException e) {}
-		
+*/		
 		
 		while (true)
 		{
 			try { Thread.sleep(30);}
 			catch (InterruptedException e) {}
 			
-			myGUI.myArea.nextGeneration(0);	
+			if (myGUI.run())
+			{
+				myGUI.myArea.nextGeneration(myGUI.ruleset());	
+			}
 		}
 	
 		
