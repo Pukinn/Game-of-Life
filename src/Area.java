@@ -12,8 +12,6 @@ public class Area extends JPanel
 
 	public Field[][] fieldArea;
 	
-	public Dimension dimArea;
-	
 	public int iFieldsX;
 	public int iFieldsY;
 	public int iFieldsize;
@@ -22,12 +20,6 @@ public class Area extends JPanel
 	
 	public Area(int _fieldsx, int _fieldsy, int _fieldsize)
 	{	
-	//	dimArea = new Dimension(iFieldsX*iFieldsize,iFieldsY*iFieldsize);
-		
-	//	this.setLayout(new BorderLayout(10,10));
-	//	this.setPreferredSize(dimArea);
-
-		
 		iFieldsX = _fieldsx;
 		iFieldsY = _fieldsy;
 		iFieldsize = _fieldsize;
@@ -67,8 +59,8 @@ public class Area extends JPanel
 				}
 				
 				
-				int iPosX = (iX-1)*iFieldsize;
-				int iPosY = (iY-1)*iFieldsize;
+				int iPosX = (iX)*iFieldsize;
+				int iPosY = (iY)*iFieldsize;
 				
 				g.fillRect(iPosX, iPosY, iFieldsize, iFieldsize);
 				

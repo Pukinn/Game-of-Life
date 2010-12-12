@@ -8,9 +8,9 @@ import javax.swing.*;
 public class GUI implements ActionListener
 {
 	
-	private static final int I_FIELDSIZE = 5;
-	private static final int I_FIELDS_X = 250;
-	private static final int I_FIELDS_Y = 140;
+	private static final int I_FIELDSIZE = 10;
+	private static final int I_FIELDS_X = 100;
+	private static final int I_FIELDS_Y = 50;
 
 	private boolean bRun;
 	private int iRuleset;
@@ -18,13 +18,24 @@ public class GUI implements ActionListener
 	
 	private JFrame frame;
 	
-
+	private JPanel panelArea;
 	public  Area myArea;
 	
+	private JPanel panelMenu;
+	
+
+
+	
 	private JButton buttonRuleset;
+	private JLabel labelSpace1;
+	
 	private JButton buttonRandom;
 	private JButton buttonClear;
+	private JLabel labelSpace2;
+	
 	private JButton buttonStart;
+	private JLabel labelSpace3;
+	
 	private JButton buttonSetSpeed;
 	
 	private JLabel labelRuleset;
@@ -32,7 +43,7 @@ public class GUI implements ActionListener
 	private JLabel labelSpeed;
 	private JTextField fieldSpeed;
 
-	private JPanel panel;
+	
 	
 
 	
@@ -54,56 +65,73 @@ public class GUI implements ActionListener
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
 		
+		
 	// AREA	
+		panelArea = new JPanel();
 		myArea = new Area(I_FIELDS_X,I_FIELDS_Y,I_FIELDSIZE);
 		
-		Dimension dimArea = new Dimension(I_FIELDS_X*I_FIELDSIZE,I_FIELDS_Y*I_FIELDSIZE);
+		Dimension dimArea = new Dimension(I_FIELDS_X*I_FIELDSIZE+1,I_FIELDS_Y*I_FIELDSIZE+1);
 		myArea.setPreferredSize(dimArea);
 		
-		frame.add(myArea, BorderLayout.CENTER);
-		
+		panelArea.add(myArea);
+		frame.add(panelArea, BorderLayout.CENTER);
 		
 	// MENU	
-		panel = new JPanel();
+		panelMenu = new JPanel();
+		
+		Dimension dimSpace30 = new Dimension(30,0);
+		
 		
 		// ruleset
 		labelRuleset = new JLabel("Regelsatz: Toruswelt");
-		panel.add(labelRuleset);
+		panelMenu.add(labelRuleset);
 		
 		buttonRuleset = new JButton("Fester Rand");
 		buttonRuleset.addActionListener(this);
-		panel.add(buttonRuleset);
+		panelMenu.add(buttonRuleset);
+		
+		labelSpace1 = new JLabel();
+		labelSpace1.setPreferredSize(dimSpace30);
+		panelMenu.add(labelSpace1);
 		
 		// random
 		buttonRandom = new JButton("Zufällig");
 		buttonRandom.addActionListener(this);
-		panel.add(buttonRandom);
+		panelMenu.add(buttonRandom);
 		
 		// clear
 		buttonClear = new JButton("Leeren");
 		buttonClear.addActionListener(this);
-		panel.add(buttonClear);
+		panelMenu.add(buttonClear);
+		
+		labelSpace2 = new JLabel();
+		labelSpace2.setPreferredSize(dimSpace30);
+		panelMenu.add(labelSpace2);
 	
 		// start / stop
 		buttonStart = new JButton("Start");
 		buttonStart.addActionListener(this);
-		panel.add(buttonStart);
+		panelMenu.add(buttonStart);
+		
+		labelSpace3 = new JLabel();
+		labelSpace3.setPreferredSize(dimSpace30);
+		panelMenu.add(labelSpace3);
 		
 		// speed
 		labelSpeed = new JLabel("Generationen/Sekunde:");
-		panel.add(labelSpeed);
+		panelMenu.add(labelSpeed);
 		
 		fieldSpeed = new JTextField(4);
 		fieldSpeed.addActionListener(this);
 		fieldSpeed.setText("10");
-		panel.add(fieldSpeed);
+		panelMenu.add(fieldSpeed);
 		
 		buttonSetSpeed = new JButton("Setzen");
 		buttonSetSpeed.addActionListener(this);
-		panel.add(buttonSetSpeed);
+		panelMenu.add(buttonSetSpeed);
 		
 		
-		frame.add(panel, BorderLayout.PAGE_END);
+		frame.add(panelMenu, BorderLayout.PAGE_END);
 		frame.pack();
 	}
 	
@@ -155,21 +183,22 @@ public class GUI implements ActionListener
 		{
 			bRun = true;
 			buttonStart.setText("Stop");
+			buttonStart.setBackground(Color.green);
 		}
 		else if (event.getActionCommand().equals("Stop"))
 		{
 			bRun = false;
 			buttonStart.setText("Start");
+			buttonStart.setBackground(null);
 		}
 		else if (event.getActionCommand().equals("Setzen"))
 		{
 			try
 			{
-				int speed = 1000/Integer.parseInt(fieldSpeed.getText());
-				
+				int speed = (int)(1000/Double.parseDouble(fieldSpeed.getText()));
 				if (speed < 1)
 				{
-					System.err.println("Fehler: keine Gültige Geschwindigkeit!");
+					System.err.println("Fehler: Geschwindigkeit zu hoch!");
 					fieldSpeed.setText("error");
 				}
 				else
