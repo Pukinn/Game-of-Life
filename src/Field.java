@@ -6,56 +6,66 @@ public class Field
 
 	private int iLifestate;
 	private int iNeighbors;
+	private boolean bHighlight;
 	
-/*	public int iX1;
-	public int iX2;
-	public int iY1;
-	public int iY2;
-*/
-
-// CUNSTRCTOR	
+	
 	public Field(int _state)
 	{
 		iLifestate = _state;
 		iNeighbors = 0;
+		bHighlight = false;
 	}
 
 // CHANGE LIFESTATE
-	public void setState(int _state)
-	{
+	public void setState(int _state){
 		iLifestate = _state;
 	}
 	
-	public void grow()
-	{
+	public void grow(){
 		iLifestate = 1;
 	}
 	
-	public void kill()
-	{
+	public void kill(){
 		iLifestate = 0;
 	}
 	
+	public void invert(){
+		if (iLifestate == 0)
+		{
+			iLifestate = 1;
+		}
+		else
+		{
+			iLifestate = 0;
+		}
+	}
+	
 	// RETURN
-	public int lifestate()
-	{
+	public int lifestate(){
 		return iLifestate;
 	}
 	
+// HEIGHLIGHT
+	public void setHighlight(boolean _b){
+		bHighlight = _b;
+	}
+	
+	// RETURN
+	public boolean highlighted(){
+		return bHighlight;
+	}
+	
 // NEIGHBORS
-	public void addNeighbor(int _add)
-	{
+	public void addNeighbor(int _add){
 		iNeighbors += _add;	
 	}
 
-	public void setNeighbors(int _set)
-	{
+	public void setNeighbors(int _set){
 		iNeighbors = _set;
 	}
 
 	// RETURN
-	public int neighbors()
-	{
+	public int neighbors(){
 		return iNeighbors;
 	}
 
@@ -85,31 +95,6 @@ public class Field
 			iLifestate = 0;
 		}
 	}
-
-// SET FIELD POSITION
-/*	public void setPosition(int _x1, int _x2, int _y1, int _y2)
-	{
-		iX1 = _x1;
-		iX2 = _x2;
-		iY1 = _y1;
-		iY2 = _y2;
-	}
-
-	
-// RETURN MOUSE HITTEN	
-	public boolean hit(int _x, int _y)
-	{
-		boolean bHitten = false;
-		
-		if (iX1 < _x && _x < iX2 &&
-			iY1 < _y && _y < iY2)
-		{
-			bHitten = true;
-		}
-		
-		return bHitten;
-	}
-*/	
 	
 	
 }

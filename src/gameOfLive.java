@@ -10,10 +10,10 @@ public class gameOfLive
 	{
 		
 		myGUI = new GUI();
-		myGUI.createFrame();		
+		myGUI.createGUI();		
 		myGUI.show();
 		
-	
+	// MAIN LOOP
 		while (true)
 		{
 			try { Thread.sleep(myGUI.speed());}
