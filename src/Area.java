@@ -29,14 +29,16 @@ public class Area extends JPanel implements MouseListener, MouseMotionListener
 	public int iBrush;	// 0 = point, 1 = glider small
 	
 	private Field[][] fieldArea;
-	private ArrayList<Point> glider1;
-	
+
+	private Brushes myBrushes;
 	
 	public Area(int _fieldsx, int _fieldsy, int _fieldsize)
 	{	
 		iFieldsX = _fieldsx;
 		iFieldsY = _fieldsy;
 		iFieldsize = _fieldsize;
+		
+		myBrushes = new Brushes();
 		
 	// SET DEFAULTS
 		iBrush = 0;
@@ -51,19 +53,6 @@ public class Area extends JPanel implements MouseListener, MouseMotionListener
 			}
 		}
 		
-	// GLIDER SMALL	
-		glider1 = new ArrayList<Point>();
-		Point p0 = new Point(1,0);
-		Point p1 = new Point(2,1);
-		Point p2 = new Point(2,2);
-		Point p3 = new Point(1,2);
-		Point p4 = new Point(0,2);
-		
-		glider1.add(p0);
-		glider1.add(p1);
-		glider1.add(p2);
-		glider1.add(p3);
-		glider1.add(p4);
 
 		
 		this.addMouseListener(this);
@@ -151,13 +140,13 @@ public class Area extends JPanel implements MouseListener, MouseMotionListener
 		this.repaint();
 	}
 	
-	public void drawFigure(int _posx, int _posy)
+	public void drawFigure(int _posx, int _posy, ArrayList<Point> _brush)
 	{
 		
-		for (int iCount = 0; iCount < glider1.size(); iCount++)
+		for (int iCount = 0; iCount < _brush.size(); iCount++)
 		{
-			int iX = _posx+glider1.get(iCount).x;
-			int iY = _posy+glider1.get(iCount).y;
+			int iX = _posx+_brush.get(iCount).x;
+			int iY = _posy+_brush.get(iCount).y;
 			
 			fieldArea[iX][iY].grow();
 		}
@@ -235,9 +224,9 @@ public class Area extends JPanel implements MouseListener, MouseMotionListener
 
 	public ArrayList<Point> rotate(ArrayList<Point> _toRotate)
 	{
-		// TODO: rotate right
-		
 		ArrayList<Point> rotated = new ArrayList<Point>();
+		
+		// TODO: rotate right
 		/*
 		for (Point curPoint : _toRotate)
 		{
@@ -258,18 +247,27 @@ public class Area extends JPanel implements MouseListener, MouseMotionListener
 			
 			if (iBrush == 0) // BRUSH
 			{
-				fieldArea[fieldX][fieldY].invert();
+				drawFigure(fieldX,fieldY,myBrushes.brush);
 			}
 			else if (iBrush == 1) // GLIDER 1
 			{
-				drawFigure(fieldX,fieldY);
+				drawFigure(fieldX,fieldY,myBrushes.glider1);
 			}
 			
 			this.repaint();
 		}
 	}
 
-
+	public void clearHighlights()
+	{
+		for (int iY=0; iY < iFieldsY; iY++)
+		{
+			for (int iX=0; iX < iFieldsX; iX++)
+			{
+				fieldArea[iX][iY].setHighlight(false);
+			}
+		}
+	}
 
 
 	public void mouseMoved(MouseEvent event)
@@ -278,50 +276,37 @@ public class Area extends JPanel implements MouseListener, MouseMotionListener
 		{
 			int fieldX = (event.getX()-1)/iFieldsize;
 			int fieldY = (event.getY()-1)/iFieldsize;
-			
-			if (true /*iBrush == 0*/)
-			{
-				if (fieldX != iMouseX || fieldY != iMouseY)
-				{
-					fieldArea[iMouseX][iMouseY].setHighlight(false);
-					fieldArea[fieldX][fieldY].setHighlight(true);
-					
-					iMouseX = fieldX;
-					iMouseY = fieldY;
-					
-					this.repaint();
-				}
+
+
+			ArrayList<Point> brush;
+			if (iBrush == 0){
+				brush = myBrushes.brush;
+			}
+			else if (iBrush == 1){
+				brush = myBrushes.glider1;
+			}
+			else {
+				brush = myBrushes.brush;
+				System.err.println("Kein gültiger Pinsel!");
 			}
 			
-			// TODO Highlight with brush = 1
-			/*
-			else if (iBrush == 1)
+			
+			if (fieldX != iMouseX || fieldY != iMouseY)
 			{
-				
-				if (fieldX != iMouseX || fieldY != iMouseY)
-				{
-					
-					for (int iCount = 0; iCount < glider1.size(); iCount++)
+				clearHighlights();
+				for (int iCount = 0; iCount < brush.size(); iCount++)
+				{					
+					int iX = fieldX+brush.get(iCount).x;
+					int iY = fieldY+brush.get(iCount).y;
+					if ((0 < iX && iX < iFieldsX) && (0 < iY && iY < iFieldsY))
 					{
-						
-						int iX = iMouseX+glider1.get(iCount)[0];
-						int iY = iMouseY+glider1.get(iCount)[1];
-						fieldArea[iX][iY].setHighlight(false);
-						
-						iX = fieldX+glider1.get(iCount)[0];
-						iY = fieldY+glider1.get(iCount)[1];
 						fieldArea[iX][iY].setHighlight(true);
-					};
-					
-					iMouseX = fieldX;
-					iMouseY = fieldY;
-					
-					this.repaint();
-					
+					}
 				}
 				
+				this.repaint();
+				
 			}
-			*/
 			
 		}
 	}
