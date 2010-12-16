@@ -49,13 +49,13 @@ public class Brushes {
 		}
 	}
 	
-	public void rotate(int _brush) {
+	public void rotate() {
 		
 		ArrayList<Point> newFigure = new ArrayList<Point>();
 		ArrayList<Point> loadFigure;
 	
 	// LOAD FIGURE
-		if (_brush == 1){
+		if (iSelBrush == 1){
 			loadFigure = glider1;
 		}
 		else {
@@ -72,8 +72,8 @@ public class Brushes {
 			}
 		}
 		
-	// REWRITE
 		
+	// REWRITE
 		for (Point curPoint : loadFigure){
 			
 			int iX = iMaxX - curPoint.y;
@@ -81,15 +81,37 @@ public class Brushes {
 			newFigure.add(new Point(iX,iY));
 		}
 		
-		// LOAD FIGURE
-		if (_brush == 1){
+		
+		if (iSelBrush == 1){
 			glider1.clear();
-			glider1 = newFigure;
+			glider1 = packBrush(newFigure);
+		}
+	}
+	
+	public ArrayList<Point> packBrush(ArrayList<Point> _brush){
+		ArrayList<Point> newBrush = new ArrayList<Point>();
+		
+		int iMaxX = 0;
+		int iMaxY = 0;
+		
+		for (Point curPoint : _brush){
+			if (iMaxX < curPoint.x){
+				iMaxX = curPoint.x;
+			}
+			if (iMaxY < curPoint.y){
+				iMaxY = curPoint.y;
+			}
+		}
+		
+		for (Point curPoint : _brush){
+			int iX = curPoint.x-iMaxX;
+			int iY = curPoint.y-iMaxY;
+			newBrush.add(new Point(iX,iY));
 		}
 		
 		
+		return newBrush;
 	}
-	
 	
 	public ArrayList<Point> currentBrush() {
 		ArrayList<Point> retBrush = new ArrayList<Point>();

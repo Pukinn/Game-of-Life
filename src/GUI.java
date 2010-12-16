@@ -45,6 +45,8 @@ public class GUI implements ActionListener
 	private JPanel panelDraw;
 	
 	private JButton buttonDrawmode;
+	
+	private JButton buttonRotate;
 	private JLabel labelSpace4;
 	
 	private JButton buttonBrush;
@@ -135,6 +137,10 @@ public class GUI implements ActionListener
 		buttonDrawmode = new JButton("Löschen");
 		buttonDrawmode.addActionListener(this);
 		panelDraw.add(buttonDrawmode);
+		
+		buttonRotate = new JButton("Rotieren 90°");
+		buttonRotate.addActionListener(this);
+		panelDraw.add(buttonRotate);
 		
 		labelSpace4 = new JLabel();
 		labelSpace4.setPreferredSize(dimSpace30);
@@ -241,7 +247,10 @@ public class GUI implements ActionListener
 			myArea.myBrushes.setDrawmode(true);
 			buttonDrawmode.setText("Löschen");
 		}
-		
+		// ROTATE
+		else if (event.getActionCommand().equals("Rotieren 90°")) {
+			myArea.myBrushes.rotate();
+		}
 		
 	}
 
