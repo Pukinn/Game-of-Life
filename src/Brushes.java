@@ -49,8 +49,45 @@ public class Brushes {
 		}
 	}
 	
-	public void rotate() {
-		// TODO rotate
+	public void rotate(int _brush) {
+		
+		ArrayList<Point> newFigure = new ArrayList<Point>();
+		ArrayList<Point> loadFigure;
+	
+	// LOAD FIGURE
+		if (_brush == 1){
+			loadFigure = glider1;
+		}
+		else {
+			System.err.println("kein gültiger Pinsel!");
+			loadFigure = brush;
+		}
+		
+	// GET MAX LENGTH
+		int iMaxX = 0;
+		
+		for (Point curPoint : loadFigure){
+			if (iMaxX < curPoint.x){
+				iMaxX = curPoint.x;
+			}
+		}
+		
+	// REWRITE
+		
+		for (Point curPoint : loadFigure){
+			
+			int iX = iMaxX - curPoint.y;
+			int iY = curPoint.x;
+			newFigure.add(new Point(iX,iY));
+		}
+		
+		// LOAD FIGURE
+		if (_brush == 1){
+			glider1.clear();
+			glider1 = newFigure;
+		}
+		
+		
 	}
 	
 	

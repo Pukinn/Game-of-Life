@@ -257,10 +257,10 @@ public class Area extends JPanel implements MouseListener, MouseMotionListener
 			
 			ArrayList<Point> brush = myBrushes.currentBrush();
 			
-			for (int iCount = 0; iCount < brush.size(); iCount++)
+			for (Point curPoint : brush)
 			{
-				int iX = fieldX+brush.get(iCount).x;
-				int iY = fieldY+brush.get(iCount).y;
+				int iX = fieldX+curPoint.x;
+				int iY = fieldY+curPoint.y;
 				
 				if (iRuleset == 0){ // TORUS
 				
@@ -310,10 +310,10 @@ public class Area extends JPanel implements MouseListener, MouseMotionListener
 				clearHighlights();
 				
 				ArrayList<Point> brush = myBrushes.currentBrush();
-				for (int iCount = 0; iCount < brush.size(); iCount++)
+				for (Point curPoint : brush)
 				{					
-					int iX = fieldX+brush.get(iCount).x;
-					int iY = fieldY+brush.get(iCount).y;
+					int iX = fieldX+curPoint.x;
+					int iY = fieldY+curPoint.y;
 					
 					if (iRuleset == 0){ // TORUS
 						iX = (iX+iFieldsX)%iFieldsX;

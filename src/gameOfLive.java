@@ -13,6 +13,7 @@ public class gameOfLive
 		myGUI.createGUI();		
 		myGUI.show();
 		
+		
 	// MAIN LOOP
 		while (true)
 		{
