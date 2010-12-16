@@ -50,7 +50,10 @@ public class GUI implements ActionListener
 	private JLabel labelSpace4;
 	
 	private JButton buttonBrush;
-	private JButton buttonGlider1;
+	private JButton buttonGlider;
+	private JButton buttonLWSS;
+	private JButton buttonMWSS;
+	private JButton buttonHWSS;
 	
 	public GUI()
 	{
@@ -150,9 +153,22 @@ public class GUI implements ActionListener
 		buttonBrush.addActionListener(this);
 		panelDraw.add(buttonBrush);
 		
-		buttonGlider1 = new JButton("Gleiter klein");
-		buttonGlider1.addActionListener(this);
-		panelDraw.add(buttonGlider1);
+		buttonGlider = new JButton("Gleiter");
+		buttonGlider.addActionListener(this);
+		panelDraw.add(buttonGlider);
+		
+		buttonLWSS = new JButton("LWSS");
+		buttonLWSS.addActionListener(this);
+		panelDraw.add(buttonLWSS);
+		
+		buttonMWSS = new JButton("MWSS");
+		buttonMWSS.addActionListener(this);
+		panelDraw.add(buttonMWSS);
+		
+		buttonHWSS = new JButton("HWSS");
+		buttonHWSS.addActionListener(this);
+		panelDraw.add(buttonHWSS);
+		
 		
 		frame.add(panelDraw, BorderLayout.PAGE_END);
 			
@@ -228,15 +244,26 @@ public class GUI implements ActionListener
 				fieldSpeed.setText("error");
 			}
 		}
-		// SET BRUSH: GLIDER 1
-		else if (event.getActionCommand().equals("Gleiter klein"))
-		{
-			myArea.myBrushes.setBrush(1);
-		}
-		// SET BRUSH: BRUSH
+		// SET BRUSH
 		else if (event.getActionCommand().equals("Pinsel"))
 		{
 			myArea.myBrushes.setBrush(0);
+		}
+		else if (event.getActionCommand().equals("Gleiter"))
+		{
+			myArea.myBrushes.setBrush(1);
+		}
+		else if (event.getActionCommand().equals("LWSS"))
+		{
+			myArea.myBrushes.setBrush(2);
+		}
+		else if (event.getActionCommand().equals("MWSS"))
+		{
+			myArea.myBrushes.setBrush(3);
+		}
+		else if (event.getActionCommand().equals("HWSS"))
+		{
+			myArea.myBrushes.setBrush(4);
 		}
 		// DRAWMODE
 		else if (event.getActionCommand().equals("Löschen")) {
