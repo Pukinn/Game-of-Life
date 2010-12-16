@@ -21,7 +21,7 @@ public class gameOfLive
 			
 			if (myGUI.myArea.run())
 			{
-				myGUI.myArea.nextGeneration(myGUI.myArea.ruleset());	
+				myGUI.myArea.nextGeneration();	
 			}
 		}
 		

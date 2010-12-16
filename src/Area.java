@@ -144,27 +144,9 @@ public class Area extends JPanel implements MouseListener, MouseMotionListener
 		this.repaint();
 	}
 	
-	public void drawFigure(int _posx, int _posy, ArrayList<Point> _brush)
-	{
-		
-		for (int iCount = 0; iCount < _brush.size(); iCount++)
-		{
-			int iX = _posx+_brush.get(iCount).x;
-			int iY = _posy+_brush.get(iCount).y;
-			
-			if (myBrushes.drawmode()) {
-				fieldArea[iX][iY].grow();
-			}
-			else {
-				fieldArea[iX][iY].kill();
-			}
-			
-		}
-		
-		this.repaint();
-	}
+
 	
-	public void nextGeneration(int _gameRule)
+	public void nextGeneration()
 	{
 		
 	// CLEAR NEIGHBORS
@@ -184,14 +166,14 @@ public class Area extends JPanel implements MouseListener, MouseMotionListener
 	
 				int lifestate = fieldArea[iX][iY].lifestate();
 				
-				addNeighbors(_gameRule, iX-1, iY-1, lifestate);	// left-top
-				addNeighbors(_gameRule, iX, iY-1, lifestate);	// top
-				addNeighbors(_gameRule, iX+1, iY-1, lifestate);	// right-top
-				addNeighbors(_gameRule, iX-1, iY, lifestate);	// left
-				addNeighbors(_gameRule, iX+1, iY, lifestate);	// right
-				addNeighbors(_gameRule, iX-1, iY+1, lifestate);	// left-bottom
-				addNeighbors(_gameRule, iX, iY+1, lifestate);	// bottom
-				addNeighbors(_gameRule, iX+1, iY+1, lifestate);	// right-bottom
+				addNeighbors(iX-1, iY-1, lifestate);	// left-top
+				addNeighbors(iX, iY-1, lifestate);		// top
+				addNeighbors(iX+1, iY-1, lifestate);	// right-top
+				addNeighbors(iX-1, iY, lifestate);		// left
+				addNeighbors(iX+1, iY, lifestate);		// right
+				addNeighbors(iX-1, iY+1, lifestate);	// left-bottom
+				addNeighbors(iX, iY+1, lifestate);		// bottom
+				addNeighbors(iX+1, iY+1, lifestate);	// right-bottom
 					
 			}
 		}
@@ -210,19 +192,18 @@ public class Area extends JPanel implements MouseListener, MouseMotionListener
 	}
 	
 	
-	public void addNeighbors(int _rule, int _x, int _y, int _add)
+	public void addNeighbors(int _x, int _y, int _add)
 	{
-		if (_rule == 0) // TORUS
+		if (iRuleset == 0) // TORUS
 		{
 			int iX = (_x+iFieldsX)%iFieldsX;
 			int iY = (_y+iFieldsY)%iFieldsY;
 			
 			fieldArea[iX][iY].addNeighbor(_add);
 		}
-		else if (_rule == 1) // SOLID
+		else if (iRuleset == 1) // SOLID
 		{
-			if ((0 < _x && _x < iFieldsX) && (0 < _y && _y < iFieldsY))
-			{
+			if ((0 < _x && _x < iFieldsX) && (0 < _y && _y < iFieldsY)){
 				fieldArea[_x][_y].addNeighbor(_add);
 			}
 		}
@@ -256,19 +237,6 @@ public class Area extends JPanel implements MouseListener, MouseMotionListener
 		return iSpeed;
 	}
 	
-	public void mouseClicked(MouseEvent event)
-	{
-		if (!bRun)
-		{
-			int fieldX = (event.getX()-1)/iFieldsize;
-			int fieldY = (event.getY()-1)/iFieldsize;
-			
-			drawFigure(fieldX,fieldY,myBrushes.currentBrush());
-
-			this.repaint();
-		}
-	}
-
 	public void clearHighlights()
 	{
 		for (int iY=0; iY < iFieldsY; iY++)
@@ -279,6 +247,53 @@ public class Area extends JPanel implements MouseListener, MouseMotionListener
 			}
 		}
 	}
+	
+	public void mouseClicked(MouseEvent event)
+	{
+		if (!bRun)
+		{
+			int fieldX = (event.getX()-1)/iFieldsize;
+			int fieldY = (event.getY()-1)/iFieldsize;
+			
+			ArrayList<Point> brush = myBrushes.currentBrush();
+			
+			for (int iCount = 0; iCount < brush.size(); iCount++)
+			{
+				int iX = fieldX+brush.get(iCount).x;
+				int iY = fieldY+brush.get(iCount).y;
+				
+				if (iRuleset == 0){ // TORUS
+				
+					iX = (iX+iFieldsX)%iFieldsX;
+					iY = (iY+iFieldsY)%iFieldsY;
+					
+					if (myBrushes.drawmode()) {
+						fieldArea[iX][iY].grow();
+					}
+					else {
+						fieldArea[iX][iY].kill();
+					}
+					
+				}
+				else if (iRuleset == 1){ // SOLID
+					
+					if ((0 <= iX && iX < iFieldsX) && (0 <= iY && iY < iFieldsY)){
+						if (myBrushes.drawmode()) {
+							fieldArea[iX][iY].grow();
+						}
+						else {
+							fieldArea[iX][iY].kill();
+						}
+					}
+				}
+
+			}
+			
+			this.repaint();
+		}
+	}
+
+
 
 
 	public void mouseMoved(MouseEvent event)
@@ -292,17 +307,27 @@ public class Area extends JPanel implements MouseListener, MouseMotionListener
 			
 			if (fieldX != iMouseX || fieldY != iMouseY)
 			{
-				ArrayList<Point> brush = myBrushes.currentBrush();
-				
 				clearHighlights();
+				
+				ArrayList<Point> brush = myBrushes.currentBrush();
 				for (int iCount = 0; iCount < brush.size(); iCount++)
 				{					
 					int iX = fieldX+brush.get(iCount).x;
 					int iY = fieldY+brush.get(iCount).y;
-					if ((0 < iX && iX < iFieldsX) && (0 < iY && iY < iFieldsY))
-					{
+					
+					if (iRuleset == 0){ // TORUS
+						iX = (iX+iFieldsX)%iFieldsX;
+						iY = (iY+iFieldsY)%iFieldsY;
+						
 						fieldArea[iX][iY].setHighlight(true);
 					}
+					else if (iRuleset == 1){ // SOLID
+						if ((0 <= iX && iX < iFieldsX) && (0 <= iY && iY < iFieldsY))
+						{
+							fieldArea[iX][iY].setHighlight(true);
+						}
+					}
+
 				}
 				iMouseX = fieldX;
 				iMouseY = fieldY;
