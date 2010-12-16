@@ -23,14 +23,16 @@ public class Area extends JPanel implements MouseListener, MouseMotionListener
 // PREVIOUS MOUSE POITION	
 	private int iMouseX;
 	private int iMouseY;
+	
+// CURRENT GAME VALUES
+	public boolean bRun;
+	public int iRuleset;
+	public int iSpeed;
 
 // AREA VALUES
-	public boolean bRun;
-	public int iBrush;	// 0 = point, 1 = glider small
-	
 	private Field[][] fieldArea;
 
-	private Brushes myBrushes;
+	public Brushes myBrushes;
 	
 	public Area(int _fieldsx, int _fieldsy, int _fieldsize)
 	{	
@@ -41,8 +43,10 @@ public class Area extends JPanel implements MouseListener, MouseMotionListener
 		myBrushes = new Brushes();
 		
 	// SET DEFAULTS
-		iBrush = 0;
 		bRun = false;
+		iRuleset = 0; // Default: torus
+		iSpeed = 100; // Default speed (in ms/genertion)
+
 		
 		fieldArea = new Field[iFieldsX][iFieldsY];
 		for (int iY=0; iY < iFieldsY; iY++)
@@ -148,7 +152,13 @@ public class Area extends JPanel implements MouseListener, MouseMotionListener
 			int iX = _posx+_brush.get(iCount).x;
 			int iY = _posy+_brush.get(iCount).y;
 			
-			fieldArea[iX][iY].grow();
+			if (myBrushes.drawmode()) {
+				fieldArea[iX][iY].grow();
+			}
+			else {
+				fieldArea[iX][iY].kill();
+			}
+			
 		}
 		
 		this.repaint();
@@ -222,20 +232,28 @@ public class Area extends JPanel implements MouseListener, MouseMotionListener
 		}
 	}
 
-	public ArrayList<Point> rotate(ArrayList<Point> _toRotate)
-	{
-		ArrayList<Point> rotated = new ArrayList<Point>();
-		
-		// TODO: rotate right
-		/*
-		for (Point curPoint : _toRotate)
-		{
-			Point newPoint;
-			int iX = curPoint.
-		}
-		*/
-		
-		return rotated;
+	public void setRun(boolean _run){
+		bRun = _run;
+	}
+	
+	public boolean run(){
+		return bRun;
+	}
+	
+	public void setRuleset(int _rule){
+		iRuleset = _rule;
+	}
+	
+	public int ruleset(){
+		return iRuleset;
+	}
+	
+	public void setSpeed(int _speed){
+		iSpeed = _speed;
+	}
+	
+	public int speed(){
+		return iSpeed;
 	}
 	
 	public void mouseClicked(MouseEvent event)
@@ -245,15 +263,8 @@ public class Area extends JPanel implements MouseListener, MouseMotionListener
 			int fieldX = (event.getX()-1)/iFieldsize;
 			int fieldY = (event.getY()-1)/iFieldsize;
 			
-			if (iBrush == 0) // BRUSH
-			{
-				drawFigure(fieldX,fieldY,myBrushes.brush);
-			}
-			else if (iBrush == 1) // GLIDER 1
-			{
-				drawFigure(fieldX,fieldY,myBrushes.glider1);
-			}
-			
+			drawFigure(fieldX,fieldY,myBrushes.currentBrush());
+
 			this.repaint();
 		}
 	}
@@ -277,22 +288,12 @@ public class Area extends JPanel implements MouseListener, MouseMotionListener
 			int fieldX = (event.getX()-1)/iFieldsize;
 			int fieldY = (event.getY()-1)/iFieldsize;
 
-
-			ArrayList<Point> brush;
-			if (iBrush == 0){
-				brush = myBrushes.brush;
-			}
-			else if (iBrush == 1){
-				brush = myBrushes.glider1;
-			}
-			else {
-				brush = myBrushes.brush;
-				System.err.println("Kein gültiger Pinsel!");
-			}
 			
 			
 			if (fieldX != iMouseX || fieldY != iMouseY)
 			{
+				ArrayList<Point> brush = myBrushes.currentBrush();
+				
 				clearHighlights();
 				for (int iCount = 0; iCount < brush.size(); iCount++)
 				{					
@@ -303,9 +304,10 @@ public class Area extends JPanel implements MouseListener, MouseMotionListener
 						fieldArea[iX][iY].setHighlight(true);
 					}
 				}
+				iMouseX = fieldX;
+				iMouseY = fieldY;
 				
-				this.repaint();
-				
+				this.repaint();	
 			}
 			
 		}

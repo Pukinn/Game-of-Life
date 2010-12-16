@@ -12,11 +12,7 @@ public class GUI implements ActionListener
 	private static final int I_FIELDSIZE = 10;
 	private static final int I_FIELDS_X = 100;
 	private static final int I_FIELDS_Y = 50;
-	
-// CURRENT GAME VALUES
-	private boolean bRun;
-	private int iRuleset;
-	private int iSpeed;
+
 
 // GUI
 	private JFrame frame;
@@ -48,14 +44,14 @@ public class GUI implements ActionListener
 	// PAGE_END
 	private JPanel panelDraw;
 	
+	private JButton buttonDrawmode;
+	private JLabel labelSpace4;
+	
 	private JButton buttonBrush;
 	private JButton buttonGlider1;
 	
 	public GUI()
 	{
-		bRun = false;
-		iRuleset = 0; // Default: torus
-		iSpeed = 100; // Default speed (in ms/genertion)
 	}
 	
 	
@@ -136,6 +132,14 @@ public class GUI implements ActionListener
 	// DRAW
 		panelDraw = new JPanel();
 		
+		buttonDrawmode = new JButton("Löschen");
+		buttonDrawmode.addActionListener(this);
+		panelDraw.add(buttonDrawmode);
+		
+		labelSpace4 = new JLabel();
+		labelSpace4.setPreferredSize(dimSpace30);
+		panelDraw.add(labelSpace4);
+		
 		buttonBrush = new JButton("Pinsel");
 		buttonBrush.addActionListener(this);
 		panelDraw.add(buttonBrush);
@@ -154,15 +158,6 @@ public class GUI implements ActionListener
 	}
 
 
-	public boolean run(){
-		return bRun;	}
-	
-	public int ruleset(){
-		return iRuleset;}
-	
-	public int speed(){
-		return iSpeed;}
-	
 	
 // BUTTONS
 	public void actionPerformed(ActionEvent event)
@@ -170,14 +165,14 @@ public class GUI implements ActionListener
 		// SET RULESET 1
 		if (event.getActionCommand().equals("Fester Rand"))
 		{
-			iRuleset = 1;
+			myArea.setRuleset(1);
 			buttonRuleset.setText("Toruswelt");
 			labelRuleset.setText("Regelsatz: Fester Rand");
 		}
 		// SET RULESET 0
 		else if (event.getActionCommand().equals("Toruswelt"))
 		{
-			iRuleset = 0;
+			myArea.setRuleset(0);
 			buttonRuleset.setText("Fester Rand");
 			labelRuleset.setText("Regelsatz: Toruswelt");
 		}
@@ -194,7 +189,6 @@ public class GUI implements ActionListener
 		// START GAME
 		else if (event.getActionCommand().equals("Start"))
 		{
-			bRun = true;
 			myArea.bRun = true;
 			buttonStart.setText("Stop");
 			buttonStart.setBackground(Color.green);
@@ -202,7 +196,6 @@ public class GUI implements ActionListener
 		// STOP GAME
 		else if (event.getActionCommand().equals("Stop"))
 		{
-			bRun = false;
 			myArea.bRun = false;
 			buttonStart.setText("Start");
 			buttonStart.setBackground(null);
@@ -220,7 +213,7 @@ public class GUI implements ActionListener
 				}
 				else
 				{
-					iSpeed = speed;
+					myArea.setSpeed(speed);
 				}
 			}
 			catch (Exception e)
@@ -232,12 +225,21 @@ public class GUI implements ActionListener
 		// SET BRUSH: GLIDER 1
 		else if (event.getActionCommand().equals("Gleiter klein"))
 		{
-			myArea.iBrush = 1;
+			myArea.myBrushes.setBrush(1);
 		}
 		// SET BRUSH: BRUSH
 		else if (event.getActionCommand().equals("Pinsel"))
 		{
-			myArea.iBrush = 0;
+			myArea.myBrushes.setBrush(0);
+		}
+		// DRAWMODE
+		else if (event.getActionCommand().equals("Löschen")) {
+			myArea.myBrushes.setDrawmode(false);
+			buttonDrawmode.setText("Zeichnen");
+		}
+		else if (event.getActionCommand().equals("Zeichnen")) {
+			myArea.myBrushes.setDrawmode(true);
+			buttonDrawmode.setText("Löschen");
 		}
 		
 		

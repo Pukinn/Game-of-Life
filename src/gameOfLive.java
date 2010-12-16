@@ -16,12 +16,12 @@ public class gameOfLive
 	// MAIN LOOP
 		while (true)
 		{
-			try { Thread.sleep(myGUI.speed());}
+			try { Thread.sleep(myGUI.myArea.speed());}
 			catch (InterruptedException e) {}
 			
-			if (myGUI.run())
+			if (myGUI.myArea.run())
 			{
-				myGUI.myArea.nextGeneration(myGUI.ruleset());	
+				myGUI.myArea.nextGeneration(myGUI.myArea.ruleset());	
 			}
 		}
 		
