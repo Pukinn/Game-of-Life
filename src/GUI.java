@@ -49,6 +49,7 @@ public class GUI implements ActionListener
 	private JButton buttonRotate;
 	private JLabel labelSpace4;
 	
+	private JTextField fieldSize;
 	private JButton buttonBrush;
 	private JButton buttonGlider;
 	private JButton buttonLWSS;
@@ -149,6 +150,11 @@ public class GUI implements ActionListener
 		labelSpace4.setPreferredSize(dimSpace30);
 		panelDraw.add(labelSpace4);
 		
+		fieldSize = new JTextField(3);
+		fieldSize.addActionListener(this);
+		fieldSize.setText("1");
+		panelDraw.add(fieldSize);
+		
 		buttonBrush = new JButton("Pinsel");
 		buttonBrush.addActionListener(this);
 		panelDraw.add(buttonBrush);
@@ -247,7 +253,9 @@ public class GUI implements ActionListener
 		// SET BRUSH
 		else if (event.getActionCommand().equals("Pinsel"))
 		{
+			int iSize = (int)(Double.parseDouble(fieldSize.getText()));
 			myArea.myBrushes.setBrush(0);
+			myArea.myBrushes.setBrushSize(iSize);
 		}
 		else if (event.getActionCommand().equals("Gleiter"))
 		{

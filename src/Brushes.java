@@ -90,11 +90,13 @@ public class Brushes {
 		
 		brush.clear();
 		
-		for (int iY = 0; _size < iY; iY++){
-			for (int iX = 0; _size < iX; iX++){
+		for (int iY = 0; iY < _size; iY++){
+			for (int iX = 0; iX < _size; iX++){
 				brush.add(new Point(iX,iY));
 			}
 		}
+		
+		brush = packBrush(brush);
 	}
 	
 	public void rotate() {
@@ -208,7 +210,7 @@ public class Brushes {
 		}
 		else if (iSelBrush == 4) {
 			retBrush.clear();
-			retBrush = MWSS;
+			retBrush = HWSS;
 		}
 		else {
 			System.err.println("Kein gültiger Pinsel!");
