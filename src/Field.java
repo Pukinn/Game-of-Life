@@ -26,6 +26,7 @@ public class Field
 	private int iNeighbors;
 	private boolean bHighlight;
 	
+	private int iPopulation;
 	
 	public Field(int _state)
 	{
@@ -61,6 +62,16 @@ public class Field
 	// RETURN
 	public int lifestate(){
 		return iLifestate;
+	}
+	
+// POPULATION
+	public void setPopulation(int _pop){
+		iPopulation = _pop;
+	}
+	
+	// RETURN
+	public int population(){
+		return iPopulation;
 	}
 	
 // HEIGHLIGHT

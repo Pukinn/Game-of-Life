@@ -28,9 +28,9 @@ public class GUI implements ActionListener
 {
 	
 // FIELD VALUES
-	private static final int I_FIELDSIZE = 10;
-	private static final int I_FIELDS_X = 100;
-	private static final int I_FIELDS_Y = 50;
+	private static final int I_FIELDSIZE = 8;
+	private static final int I_FIELDS_X = 70;
+	private static final int I_FIELDS_Y = 70;
 
 
 // GUI
@@ -39,12 +39,8 @@ public class GUI implements ActionListener
 	// PAGE_START
 	private JPanel panelMenu;
 	
-	private JButton buttonRuleset;
-	private JLabel labelSpace1;
-	
-	private JButton buttonRandom;
-	private JButton buttonClear;
-	private JLabel labelSpace2;
+
+
 	
 	private JButton buttonStart;
 	private JLabel labelSpace3;
@@ -98,28 +94,6 @@ public class GUI implements ActionListener
 		// RULESET
 		labelRuleset = new JLabel("Regelsatz: Toruswelt");
 		panelMenu.add(labelRuleset);
-		
-		buttonRuleset = new JButton("Fester Rand");
-		buttonRuleset.addActionListener(this);
-		panelMenu.add(buttonRuleset);
-		
-		labelSpace1 = new JLabel();
-		labelSpace1.setPreferredSize(dimSpace30);
-		panelMenu.add(labelSpace1);
-		
-		// RANDOM
-		buttonRandom = new JButton("Zufällig");
-		buttonRandom.addActionListener(this);
-		panelMenu.add(buttonRandom);
-		
-		// CLEAR
-		buttonClear = new JButton("Leeren");
-		buttonClear.addActionListener(this);
-		panelMenu.add(buttonClear);
-		
-		labelSpace2 = new JLabel();
-		labelSpace2.setPreferredSize(dimSpace30);
-		panelMenu.add(labelSpace2);
 	
 		
 		// START/STOP
@@ -218,32 +192,9 @@ public class GUI implements ActionListener
 // BUTTONS
 	public void actionPerformed(ActionEvent event){
 		
-		// SET RULESET 1
-		if (event.getActionCommand().equals("Fester Rand"))
-		{
-			myArea.setRuleset(1);
-			buttonRuleset.setText("Toruswelt");
-			labelRuleset.setText("Regelsatz: Fester Rand");
-		}
-		// SET RULESET 0
-		else if (event.getActionCommand().equals("Toruswelt"))
-		{
-			myArea.setRuleset(0);
-			buttonRuleset.setText("Fester Rand");
-			labelRuleset.setText("Regelsatz: Toruswelt");
-		}
-		// SET RANDOM
-		else if (event.getActionCommand().equals("Zufällig"))
-		{
-			myArea.setRandom(0.4, 0.6, 0.4, 0.6, 0.3);
-		}
-		// CLEAR AREA
-		else if (event.getActionCommand().equals("Leeren"))
-		{
-			myArea.clear();
-		}
+
 		// START GAME
-		else if (event.getActionCommand().equals("Start"))
+		if (event.getActionCommand().equals("Start"))
 		{
 			myArea.bRun = true;
 			buttonStart.setText("Stop");
