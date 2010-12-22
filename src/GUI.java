@@ -1,6 +1,25 @@
+/*
+	Game Of Life
+    Copyright (C) 2010  Thomas Högner
+
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+*/
+
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.ArrayList;
 
 import javax.swing.*;
 
@@ -36,6 +55,9 @@ public class GUI implements ActionListener
 	
 	private JLabel labelSpeed;
 	private JTextField fieldSpeed;
+	private JLabel labelSpace4;
+	
+	private JLabel labelGenerations;
 	
 	// PAGE_CENTER
 	private JPanel panelArea;
@@ -47,14 +69,12 @@ public class GUI implements ActionListener
 	private JButton buttonDrawmode;
 	
 	private JButton buttonRotate;
-	private JLabel labelSpace4;
+	private JLabel labelSpace5;
 	
 	private JTextField fieldSize;
-	private JButton buttonBrush;
-	private JButton buttonGlider;
-	private JButton buttonLWSS;
-	private JButton buttonMWSS;
-	private JButton buttonHWSS;
+	
+	private ArrayList<JButton> buttonsBrushes;
+	
 	
 	public GUI()
 	{
@@ -101,8 +121,11 @@ public class GUI implements ActionListener
 		labelSpace2.setPreferredSize(dimSpace30);
 		panelMenu.add(labelSpace2);
 	
+		
 		// START/STOP
 		buttonStart = new JButton("Start");
+		int y = (int)buttonStart.getPreferredSize().getHeight();
+		buttonStart.setPreferredSize(new Dimension(80,y));
 		buttonStart.addActionListener(this);
 		panelMenu.add(buttonStart);
 		
@@ -111,17 +134,26 @@ public class GUI implements ActionListener
 		panelMenu.add(labelSpace3);
 		
 		// SPEED
-		labelSpeed = new JLabel("Generationen/Sekunde:");
+		labelSpeed = new JLabel("ms/Generation:");
 		panelMenu.add(labelSpeed);
 		
 		fieldSpeed = new JTextField(4);
 		fieldSpeed.addActionListener(this);
-		fieldSpeed.setText("10");
+		fieldSpeed.setText("100");
 		panelMenu.add(fieldSpeed);
 		
 		buttonSetSpeed = new JButton("Setzen");
 		buttonSetSpeed.addActionListener(this);
 		panelMenu.add(buttonSetSpeed);
+		
+		labelSpace4 = new JLabel();
+		labelSpace4.setPreferredSize(dimSpace30);
+		panelMenu.add(labelSpace4);
+		
+		labelGenerations = new JLabel("Generationen: 0");
+		y = (int)labelGenerations.getPreferredSize().getHeight();
+		labelGenerations.setPreferredSize(new Dimension(150,y));
+		panelMenu.add(labelGenerations);
 		
 		frame.add(panelMenu, BorderLayout.PAGE_START);
 
@@ -146,35 +178,28 @@ public class GUI implements ActionListener
 		buttonRotate.addActionListener(this);
 		panelDraw.add(buttonRotate);
 		
-		labelSpace4 = new JLabel();
-		labelSpace4.setPreferredSize(dimSpace30);
-		panelDraw.add(labelSpace4);
+		labelSpace5 = new JLabel();
+		labelSpace5.setPreferredSize(dimSpace30);
+		panelDraw.add(labelSpace5);
 		
 		fieldSize = new JTextField(3);
 		fieldSize.addActionListener(this);
 		fieldSize.setText("1");
 		panelDraw.add(fieldSize);
 		
-		buttonBrush = new JButton("Pinsel");
-		buttonBrush.addActionListener(this);
-		panelDraw.add(buttonBrush);
+		// BRUSH BUTTONS
 		
-		buttonGlider = new JButton("Gleiter");
-		buttonGlider.addActionListener(this);
-		panelDraw.add(buttonGlider);
+		buttonsBrushes = new ArrayList<JButton>();
+
 		
-		buttonLWSS = new JButton("LWSS");
-		buttonLWSS.addActionListener(this);
-		panelDraw.add(buttonLWSS);
+		for (Figure curFigure : myArea.myBrushes.brushes){
+			buttonsBrushes.add(new JButton(curFigure.name()));;
+		}
 		
-		buttonMWSS = new JButton("MWSS");
-		buttonMWSS.addActionListener(this);
-		panelDraw.add(buttonMWSS);
-		
-		buttonHWSS = new JButton("HWSS");
-		buttonHWSS.addActionListener(this);
-		panelDraw.add(buttonHWSS);
-		
+		for (JButton curButton : buttonsBrushes){
+			curButton.addActionListener(this);
+			panelDraw.add(curButton);
+		}	
 		
 		frame.add(panelDraw, BorderLayout.PAGE_END);
 			
@@ -185,11 +210,14 @@ public class GUI implements ActionListener
 		frame.setVisible(true);
 	}
 
+	public void drawGenerations(int _gen){
+		labelGenerations.setText("Generationen: "+_gen);
+	}
 
 	
 // BUTTONS
-	public void actionPerformed(ActionEvent event)
-	{
+	public void actionPerformed(ActionEvent event){
+		
 		// SET RULESET 1
 		if (event.getActionCommand().equals("Fester Rand"))
 		{
@@ -233,45 +261,14 @@ public class GUI implements ActionListener
 		{
 			try
 			{
-				int speed = (int)(1000/Double.parseDouble(fieldSpeed.getText()));
-				if (speed < 1)
-				{
-					System.err.println("Fehler: Geschwindigkeit zu hoch!");
-					fieldSpeed.setText("error");
-				}
-				else
-				{
-					myArea.setSpeed(speed);
-				}
+				int speed = Integer.parseInt(fieldSpeed.getText());
+				myArea.setSpeed(speed);
 			}
 			catch (Exception e)
 			{
 				System.err.println("keine Gültige Geschwindigkeit!");
 				fieldSpeed.setText("error");
 			}
-		}
-		// SET BRUSH
-		else if (event.getActionCommand().equals("Pinsel"))
-		{
-			int iSize = (int)(Double.parseDouble(fieldSize.getText()));
-			myArea.myBrushes.setBrush(0);
-			myArea.myBrushes.setBrushSize(iSize);
-		}
-		else if (event.getActionCommand().equals("Gleiter"))
-		{
-			myArea.myBrushes.setBrush(1);
-		}
-		else if (event.getActionCommand().equals("LWSS"))
-		{
-			myArea.myBrushes.setBrush(2);
-		}
-		else if (event.getActionCommand().equals("MWSS"))
-		{
-			myArea.myBrushes.setBrush(3);
-		}
-		else if (event.getActionCommand().equals("HWSS"))
-		{
-			myArea.myBrushes.setBrush(4);
 		}
 		// DRAWMODE
 		else if (event.getActionCommand().equals("Löschen")) {
@@ -284,7 +281,21 @@ public class GUI implements ActionListener
 		}
 		// ROTATE
 		else if (event.getActionCommand().equals("Rotieren 90°")) {
-			myArea.myBrushes.rotate();
+			myArea.myBrushes.brushes.get(myArea.myBrushes.iSelBrush).rotate();
+		}
+		// SET BRUSH
+		else {
+			
+			int iSize = (int)(Double.parseDouble(fieldSize.getText()));
+			myArea.myBrushes.setBrushSize(iSize,iSize);
+			
+			int iCount = 0;
+			for (Figure curFigure : myArea.myBrushes.brushes){
+				if (event.getActionCommand().equals(curFigure.name())){
+					myArea.myBrushes.setBrush(iCount);
+				}
+				iCount++;
+			}
 		}
 		
 	}

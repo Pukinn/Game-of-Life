@@ -1,16 +1,31 @@
+/*
+	Game Of Life
+    Copyright (C) 2010  Thomas Högner
+
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+*/
+
 import java.awt.Point;
 import java.util.ArrayList;
 
 
-public class Brushes {
 
-	public ArrayList<Point> brush;
-	public ArrayList<Point> glider;
-	public ArrayList<Point> LWSS;
-	public ArrayList<Point> MWSS;
-	public ArrayList<Point> HWSS;
+public class Brushes {
 	
-	private int iSelBrush;
+	public ArrayList<Figure> brushes;
+	
+	public int iSelBrush;
 	private boolean bDrawmode;
 	
 	public Brushes()
@@ -19,60 +34,72 @@ public class Brushes {
 	// BRUSH
 		iSelBrush = 0;
 		bDrawmode = true; // true = draw, false = erase
+
+		brushes = new ArrayList<Figure>();
+		
+	// BRUSH 1x1	
+		brushes.add(new Figure(0));
+		Figure fig = brushes.get(0);
+		fig.setName("Pinsel");
+		fig.addField(0, 0);
 	
-	// BRUSH 1x1
-		brush = new ArrayList<Point>();
-		brush.add(new Point(0,0));
+	// GLIDER
+		brushes.add(new Figure(0));
+		fig = brushes.get(1);
+		fig.setName("Gleiter");
+		fig.addField(-1,-2);
+		fig.addField(0,-1);
+		fig.addField(0,0);
+		fig.addField(-1,0);
+		fig.addField(-2,0);
 		
-	// GLIDER	
-		glider = new ArrayList<Point>();
-		glider.add(new Point(-1,-2));
-		glider.add(new Point(0,-1));
-		glider.add(new Point(0,0));
-		glider.add(new Point(-1,0));
-		glider.add(new Point(-2,0));
+	// LWSS
+		brushes.add(new Figure(0));
+		fig = brushes.get(2);
+		fig.setName("LWSS");
+		fig.addField(-3,-3);
+		fig.addField(-2,-3);
+		fig.addField(-1,-3);
+		fig.addField(0,-3);
+		fig.addField(-4,-2);
+		fig.addField(0,-2);
+		fig.addField(0,-1);
+		fig.addField(-1,0);
+		fig.addField(-4,0);
+	
+	// MWSS
+		brushes.add(new Figure(0));
+		fig = brushes.get(3);
+		fig.setName("MWSS");
+		fig.addField(-5,-3);
+		fig.addField(-5,-1);
+		fig.addField(-4,-4);
+		fig.addField(-3,-4);
+		fig.addField(-3,0);
+		fig.addField(-2,-4);
+		fig.addField(-1,-1);
+		fig.addField(-1,-4);
+		fig.addField(0,-4);
+		fig.addField(0,-3);
+		fig.addField(0,-2);
 		
-	// LWSS	
-		LWSS = new ArrayList<Point>();
-		LWSS.add(new Point(-3,-3));
-		LWSS.add(new Point(-2,-3));
-		LWSS.add(new Point(-1,-3));
-		LWSS.add(new Point(0,-3));
-		LWSS.add(new Point(-4,-2));
-		LWSS.add(new Point(0,-2));
-		LWSS.add(new Point(0,-1));
-		LWSS.add(new Point(-1,0));
-		LWSS.add(new Point(-4,0));
-		
-	// MWSS	
-		MWSS = new ArrayList<Point>();
-		MWSS.add(new Point(-5,-3));
-		MWSS.add(new Point(-5,-1));
-		MWSS.add(new Point(-4,-4));
-		MWSS.add(new Point(-3,-4));
-		MWSS.add(new Point(-3,0));
-		MWSS.add(new Point(-2,-4));
-		MWSS.add(new Point(-1,-1));
-		MWSS.add(new Point(-1,-4));
-		MWSS.add(new Point(0,-4));
-		MWSS.add(new Point(0,-3));
-		MWSS.add(new Point(0,-2));
-		
-		// HWSS	
-		HWSS = new ArrayList<Point>();
-		HWSS.add(new Point(-6,-3));
-		HWSS.add(new Point(-6,-1));
-		HWSS.add(new Point(-5,-4));
-		HWSS.add(new Point(-4,-4));
-		HWSS.add(new Point(-3,-4));
-		HWSS.add(new Point(-2,-4));
-		HWSS.add(new Point(-1,-4));
-		HWSS.add(new Point(0,-4));
-		HWSS.add(new Point(0,-3));
-		HWSS.add(new Point(0,-2));
-		HWSS.add(new Point(-1,-1));
-		HWSS.add(new Point(-4,0));
-		HWSS.add(new Point(-3,0));
+	// HWSS
+		brushes.add(new Figure(0));
+		fig = brushes.get(4);
+		fig.setName("HWSS");
+		fig.addField(-6,-3);
+		fig.addField(-6,-1);
+		fig.addField(-5,-4);
+		fig.addField(-4,-4);
+		fig.addField(-3,-4);
+		fig.addField(-2,-4);
+		fig.addField(-1,-4);
+		fig.addField(0,-4);
+		fig.addField(0,-3);
+		fig.addField(0,-2);
+		fig.addField(-1,-1);
+		fig.addField(-4,0);
+		fig.addField(-3,0);
 		
 	}
 	
@@ -86,137 +113,23 @@ public class Brushes {
 		iSelBrush = _brush;
 	}
 	
-	public void setBrushSize(int _size) {
+	public void setBrushSize(int _x, int _y) {
 		
-		brush.clear();
+		brushes.get(0).clear();
 		
-		for (int iY = 0; iY < _size; iY++){
-			for (int iX = 0; iX < _size; iX++){
-				brush.add(new Point(iX,iY));
+		for (int iY = 0; iY < _y; iY++){
+			for (int iX = 0; iX < _x; iX++){
+				brushes.get(0).addField(iX, iY);
 			}
 		}
 		
-		brush = packBrush(brush);
+		brushes.get(0).pack();
 	}
+
 	
-	public void rotate() {
-		
-		ArrayList<Point> newFigure = new ArrayList<Point>();
-		ArrayList<Point> loadFigure = currentBrush();
-	
-	/*
-		
-	// LOAD FIGURE
-		if (iSelBrush == 1){
-			loadFigure = glider;
-		}
-		else if (iSelBrush == 2){
-			loadFigure = LWSS;
-		}
-		else if (iSelBrush == 3){
-			loadFigure = MWSS;
-		}
-		else if (iSelBrush == 4){
-			loadFigure = HWSS;
-		}
-		else {
-			System.err.println("kein gültiger Pinsel!");
-			loadFigure = brush;
-		}
-		
-		*/
-		
-	// GET MAX LENGTH
-		int iMaxX = 0;
-		
-		for (Point curPoint : loadFigure){
-			if (iMaxX < curPoint.x){
-				iMaxX = curPoint.x;
-			}
-		}
-		
-		
-	// REWRITE
-		for (Point curPoint : loadFigure){
-			
-			int iX = iMaxX - curPoint.y;
-			int iY = curPoint.x;
-			newFigure.add(new Point(iX,iY));
-		}
-		
-		
-		if (iSelBrush == 1){
-			glider.clear();
-			glider = packBrush(newFigure);
-		}
-		else if (iSelBrush == 2){
-			LWSS.clear();
-			LWSS = packBrush(newFigure);
-		}
-		else if (iSelBrush == 3){
-			MWSS.clear();
-			MWSS = packBrush(newFigure);
-		}
-		else if (iSelBrush == 4){
-			HWSS.clear();
-			HWSS = packBrush(newFigure);
-		}
-	}
-	
-	public ArrayList<Point> packBrush(ArrayList<Point> _brush){
-		ArrayList<Point> newBrush = new ArrayList<Point>();
-		
-		int iMaxX = 0;
-		int iMaxY = 0;
-		
-		for (Point curPoint : _brush){
-			if (iMaxX < curPoint.x){
-				iMaxX = curPoint.x;
-			}
-			if (iMaxY < curPoint.y){
-				iMaxY = curPoint.y;
-			}
-		}
-		
-		for (Point curPoint : _brush){
-			int iX = curPoint.x-iMaxX;
-			int iY = curPoint.y-iMaxY;
-			newBrush.add(new Point(iX,iY));
-		}
-		
-		
-		return newBrush;
-	}
 	
 	public ArrayList<Point> currentBrush() {
-		ArrayList<Point> retBrush = new ArrayList<Point>();
-		retBrush.add(new Point(0,0));
-		
-		if (iSelBrush == 0) {
-			retBrush.clear();
-			retBrush = brush;
-		}
-		else if (iSelBrush == 1) {
-			retBrush.clear();
-			retBrush = glider;
-		}
-		else if (iSelBrush == 2) {
-			retBrush.clear();
-			retBrush = LWSS;
-		}
-		else if (iSelBrush == 3) {
-			retBrush.clear();
-			retBrush = MWSS;
-		}
-		else if (iSelBrush == 4) {
-			retBrush.clear();
-			retBrush = HWSS;
-		}
-		else {
-			System.err.println("Kein gültiger Pinsel!");
-		}
-		
-		return retBrush;
+		return brushes.get(iSelBrush).points();
 	}
 	
 	public boolean drawmode() {
