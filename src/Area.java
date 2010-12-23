@@ -86,38 +86,41 @@ public class Area extends JPanel implements MouseListener, MouseMotionListener
 	public void paint(Graphics g)
 	{	
 		
-		for (int iY = 0; iY < iFieldsY; iY++)
-		{
-			for (int iX = 0; iX < iFieldsX; iX++)
-			{
+		for (int iY = 0; iY < iFieldsY; iY++){
+			for (int iX = 0; iX < iFieldsX; iX++){
+				
 				int iLifestate = fieldArea[iX][iY].lifestate();
+				int iPopulation = fieldArea[iX][iY].population();
 				boolean bHighlight = fieldArea[iX][iY].highlighted() && !bRun;
 				
 				
-				if (iLifestate == 0)
-				{
-					if (!bHighlight)
-					{
+				if (iLifestate == 0){
+					if (!bHighlight){
 						g.setColor(Color.lightGray);
 					}
-					else
-					{
+					else {
 						g.setColor(new Color(240,240,240));
 					}
 				}
-				else if (iLifestate == 1)
-				{
-					if (!bHighlight)
-					{
-					g.setColor(Color.red);
+				else if (iLifestate > 0 && iPopulation == 0) {
+					
+					if (!bHighlight) {
+					g.setColor(Color.blue);
 					}
-					else
-					{
-						g.setColor(Color.pink);
+					else {
+						g.setColor(new Color(120,120,255));
 					}
 				}
-				else
-				{
+				else if (iLifestate > 0 && iPopulation == 1) {
+					
+					if (!bHighlight) {
+					g.setColor(new Color(255,162,0));
+					}
+					else {
+						g.setColor(new Color(255,219,155));
+					}
+				}
+				else {
 					System.err.println("Feld "+iX+"/"+iY+" hat keinen definierten Wert!");
 				}
 				

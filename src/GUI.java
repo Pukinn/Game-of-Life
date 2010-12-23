@@ -29,7 +29,7 @@ public class GUI implements ActionListener
 	
 // FIELD VALUES
 	private static final int I_FIELDSIZE = 8;
-	private static final int I_FIELDS_X = 70;
+	private static final int I_FIELDS_X = 140;
 	private static final int I_FIELDS_Y = 70;
 
 
@@ -83,7 +83,7 @@ public class GUI implements ActionListener
 		frame = new JFrame();
 		frame.setLayout(new BorderLayout(0,0));
 		
-		frame.setTitle("Conways Game of Live");
+		frame.setTitle("Conways Game of Life");
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		
 	// MENU	

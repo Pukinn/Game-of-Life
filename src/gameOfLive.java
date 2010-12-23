@@ -21,32 +21,38 @@ public class gameOfLive
 {
 
 	public static GUI myGUI;
-
+	public static DialogRuleset myDiaRuleset;
 	
 	public static void main(String args[])
 	{
 		
-		myGUI = new GUI();
-		myGUI.createGUI();		
-		myGUI.show();
+		myDiaRuleset = new DialogRuleset();
+		myDiaRuleset.create();
 		
-		
-	// MAIN LOOP
-		int iCounter = 0;
-		while (true)
-		{
-			try { Thread.sleep(myGUI.myArea.speed());}
-			catch (InterruptedException e) {}
+		if (!myDiaRuleset.visible()){
+			
+			myGUI = new GUI();
+			myGUI.createGUI();		
+			myGUI.show();
 			
 			
-			if (myGUI.myArea.run())
+		// MAIN LOOP
+			int iCounter = 0;
+			while (true)
 			{
-				myGUI.myArea.nextGeneration();	
-				iCounter++;
-				myGUI.drawGenerations(iCounter);
+				try { Thread.sleep(myGUI.myArea.speed());}
+				catch (InterruptedException e) {}
+				
+				
+				if (myGUI.myArea.run())
+				{
+					myGUI.myArea.nextGeneration();	
+					iCounter++;
+					myGUI.drawGenerations(iCounter);
+				}
+				
 			}
 			
 		}
-		
 	}
 }
