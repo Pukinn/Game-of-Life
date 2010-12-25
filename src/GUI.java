@@ -27,53 +27,46 @@ import javax.swing.*;
 public class GUI implements ActionListener
 {
 	
-// FIELD VALUES
-	private static final int I_FIELDSIZE = 8;
-	private static final int I_FIELDS_X = 140;
-	private static final int I_FIELDS_Y = 70;
-
-
 // GUI
 	private JFrame frame;
 	
 	// PAGE_START
 	private JPanel panelMenu;
+		private JButton buttonStart;
+		private JLabel labelSpace3;
 	
-
-
+		private JButton buttonSetSpeed;
 	
-	private JButton buttonStart;
-	private JLabel labelSpace3;
+		private JLabel labelRuleset;
 	
-	private JButton buttonSetSpeed;
-	
-	private JLabel labelRuleset;
-	
-	private JLabel labelSpeed;
-	private JTextField fieldSpeed;
-	private JLabel labelSpace4;
-	
-	private JLabel labelGenerations;
+		private JLabel labelSpeed;
+		private JTextField fieldSpeed;
+		private JLabel labelSpace4;
+		
+		private JLabel labelGenerations;
 	
 	// PAGE_CENTER
 	private JPanel panelArea;
-	public  Area myArea;
+		public  Area myArea;
 	
 	// PAGE_END
 	private JPanel panelDraw;
+		private JButton buttonDrawmode;
+		
+		private JButton buttonRotate;
+		private JLabel labelSpace5;
+		
+		private JTextField fieldSize;
+		
+		private ArrayList<JButton> buttonsBrushes;
 	
-	private JButton buttonDrawmode;
+		
+	// RULESETS
+		private Ruleset ruleset;
 	
-	private JButton buttonRotate;
-	private JLabel labelSpace5;
-	
-	private JTextField fieldSize;
-	
-	private ArrayList<JButton> buttonsBrushes;
-	
-	
-	public GUI()
+	public GUI(Ruleset _rule)
 	{
+		ruleset = _rule;
 	}
 	
 	
@@ -113,7 +106,7 @@ public class GUI implements ActionListener
 		
 		fieldSpeed = new JTextField(4);
 		fieldSpeed.addActionListener(this);
-		fieldSpeed.setText("100");
+		fieldSpeed.setText((new Integer(ruleset.iSpeed)).toString());
 		panelMenu.add(fieldSpeed);
 		
 		buttonSetSpeed = new JButton("Setzen");
@@ -133,9 +126,9 @@ public class GUI implements ActionListener
 
 	// AREA
 		panelArea = new JPanel();
-		myArea = new Area(I_FIELDS_X,I_FIELDS_Y,I_FIELDSIZE);
+		myArea = new Area(ruleset);
 		
-		Dimension dimArea = new Dimension(I_FIELDS_X*I_FIELDSIZE+1,I_FIELDS_Y*I_FIELDSIZE+1);
+		Dimension dimArea = new Dimension(ruleset.iAreaWidth*ruleset.iFieldsize+1,ruleset.iAreaHeight*ruleset.iFieldsize+1);
 		myArea.setPreferredSize(dimArea);
 		
 		panelArea.add(myArea);
@@ -188,6 +181,21 @@ public class GUI implements ActionListener
 		labelGenerations.setText("Generationen: "+_gen);
 	}
 
+	public void mainLoop(){
+		int iCounter = 0;
+		while (true)
+		{
+			try { Thread.sleep(ruleset.iSpeed);}
+			catch (InterruptedException e) {}
+
+			if (ruleset.bRun){
+				myArea.nextGeneration();	
+				iCounter++;
+				drawGenerations(iCounter);
+			}
+		}
+	}
+	
 	
 // BUTTONS
 	public void actionPerformed(ActionEvent event){
@@ -196,14 +204,14 @@ public class GUI implements ActionListener
 		// START GAME
 		if (event.getActionCommand().equals("Start"))
 		{
-			myArea.bRun = true;
+			ruleset.bRun = true;
 			buttonStart.setText("Stop");
 			buttonStart.setBackground(Color.green);
 		}
 		// STOP GAME
 		else if (event.getActionCommand().equals("Stop"))
 		{
-			myArea.bRun = false;
+			ruleset.bRun = false;
 			buttonStart.setText("Start");
 			buttonStart.setBackground(null);
 		}
@@ -212,8 +220,7 @@ public class GUI implements ActionListener
 		{
 			try
 			{
-				int speed = Integer.parseInt(fieldSpeed.getText());
-				myArea.setSpeed(speed);
+				ruleset.iSpeed = Integer.parseInt(fieldSpeed.getText());
 			}
 			catch (Exception e)
 			{

@@ -33,43 +33,30 @@ public class Area extends JPanel implements MouseListener, MouseMotionListener
 {
 	private static final long serialVersionUID = 646822554708769792L;
 
-// AREA DIMENSION
-	private int iFieldsX;
-	private int iFieldsY;
-	private int iFieldsize;
+// GAME VALUES
+	private Ruleset rule;
 	
 // PREVIOUS MOUSE POITION	
 	private int iMouseX;
 	private int iMouseY;
-	
-// CURRENT GAME VALUES
-	public boolean bRun;
-	public int iRuleset;
-	public int iSpeed;
+
 
 // AREA VALUES
 	private Field[][] fieldArea;
 
 	public Brushes myBrushes;
 	
-	public Area(int _fieldsx, int _fieldsy, int _fieldsize)
+	public Area(Ruleset _rule)
 	{	
-		iFieldsX = _fieldsx;
-		iFieldsY = _fieldsy;
-		iFieldsize = _fieldsize;
+		rule = _rule;
 		
 		myBrushes = new Brushes();
-		
-	// SET DEFAULTS
-		bRun = false;
-		iRuleset = 0; // Default: torus
-		iSpeed = 100; // Default speed (in ms/generation)
 
 		
-		fieldArea = new Field[iFieldsX][iFieldsY];
-		for (int iY=0; iY < iFieldsY; iY++)
+		fieldArea = new Field[rule.iAreaWidth][rule.iAreaHeight];
+		for (int iY=0; iY < rule.iAreaHeight; iY++)
 		{
-			for (int iX=0; iX < iFieldsX; iX++)
+			for (int iX=0; iX < rule.iAreaWidth; iX++)
 			{
 				fieldArea[iX][iY] = new Field(0);
 			}
@@ -86,12 +73,12 @@ public class Area extends JPanel implements MouseListener, MouseMotionListener
 	public void paint(Graphics g)
 	{	
 		
-		for (int iY = 0; iY < iFieldsY; iY++){
-			for (int iX = 0; iX < iFieldsX; iX++){
+		for (int iY = 0; iY < rule.iAreaHeight; iY++){
+			for (int iX = 0; iX < rule.iAreaWidth; iX++){
 				
 				int iLifestate = fieldArea[iX][iY].lifestate();
 				int iPopulation = fieldArea[iX][iY].population();
-				boolean bHighlight = fieldArea[iX][iY].highlighted() && !bRun;
+				boolean bHighlight = fieldArea[iX][iY].highlighted() && !rule.bRun;
 				
 				
 				if (iLifestate == 0){
@@ -125,15 +112,15 @@ public class Area extends JPanel implements MouseListener, MouseMotionListener
 				}
 				
 				
-				int iPosX = iX*iFieldsize;
-				int iPosY = iY*iFieldsize;
+				int iPosX = iX*rule.iFieldsize;
+				int iPosY = iY*rule.iFieldsize;
 				
 				// DRAW FIELD
-				g.fillRect(iPosX, iPosY, iFieldsize, iFieldsize);
+				g.fillRect(iPosX, iPosY, rule.iFieldsize, rule.iFieldsize);
 				
 				// DRAW BORDER
 				g.setColor(Color.black);
-				g.drawRect(iPosX, iPosY, iFieldsize, iFieldsize);
+				g.drawRect(iPosX, iPosY, rule.iFieldsize, rule.iFieldsize);
 				
 			}
 		}
@@ -143,9 +130,9 @@ public class Area extends JPanel implements MouseListener, MouseMotionListener
 	
 	public void clear()
 	{
-		for (int iY=0; iY < iFieldsY; iY++)
+		for (int iY=0; iY < rule.iAreaHeight; iY++)
 		{
-			for (int iX=0; iX < iFieldsX; iX++)
+			for (int iX=0; iX < rule.iAreaWidth; iX++)
 			{
 				fieldArea[iX][iY].kill();
 			}
@@ -157,8 +144,8 @@ public class Area extends JPanel implements MouseListener, MouseMotionListener
 	public void setRandom(double _xMin, double _xMax, double _yMin, double _yMax, double _lifeValue)
 	{
 		
-		for (int iX = (int)(iFieldsX*_xMin); iX < (int)(iFieldsX*_xMax); iX++){
-			for (int iY = (int)(iFieldsY*_yMin); iY < (int)(iFieldsY*_yMax); iY++){
+		for (int iX = (int)(rule.iAreaWidth*_xMin); iX < (int)(rule.iAreaWidth*_xMax); iX++){
+			for (int iY = (int)(rule.iAreaHeight*_yMin); iY < (int)(rule.iAreaHeight*_yMax); iY++){
 				fieldArea[iX][iY].setRandom(_lifeValue);
 			}	
 		}
@@ -171,18 +158,18 @@ public class Area extends JPanel implements MouseListener, MouseMotionListener
 	{
 		
 	// CLEAR NEIGHBORS
-		for (int iY=0; iY < iFieldsY; iY++)
+		for (int iY=0; iY < rule.iAreaHeight; iY++)
 		{
-			for (int iX=0; iX < iFieldsX; iX++)
+			for (int iX=0; iX < rule.iAreaWidth; iX++)
 			{
 				fieldArea[iX][iY].setNeighbors(0);
 			}
 		}
 
 	// SET NEIGHBORS
-		for (int iY=0; iY < iFieldsY; iY++)
+		for (int iY=0; iY < rule.iAreaHeight; iY++)
 		{	
-			for (int iX=0; iX < iFieldsX; iX++)
+			for (int iX=0; iX < rule.iAreaWidth; iX++)
 			{
 	
 				int lifestate = fieldArea[iX][iY].lifestate();
@@ -200,9 +187,9 @@ public class Area extends JPanel implements MouseListener, MouseMotionListener
 		}
 			
 	// KILL/BIRTH
-		for (int iY=0; iY < iFieldsY; iY++)
+		for (int iY=0; iY < rule.iAreaHeight; iY++)
 		{
-			for (int iX=0; iX < iFieldsX; iX++)
+			for (int iX=0; iX < rule.iAreaWidth; iX++)
 			{
 				fieldArea[iX][iY].killbirth(2, 3, 3, 3);	// classical 23/3 rule
 			}
@@ -215,16 +202,16 @@ public class Area extends JPanel implements MouseListener, MouseMotionListener
 	
 	public void addNeighbors(int _x, int _y, int _add)
 	{
-		if (iRuleset == 0) // TORUS
+		if (rule.iRule == 0) // TORUS
 		{
-			int iX = (_x+iFieldsX)%iFieldsX;
-			int iY = (_y+iFieldsY)%iFieldsY;
+			int iX = (_x+rule.iAreaWidth)%rule.iAreaWidth;
+			int iY = (_y+rule.iAreaHeight)%rule.iAreaHeight;
 			
 			fieldArea[iX][iY].addNeighbor(_add);
 		}
-		else if (iRuleset == 1) // SOLID
+		else if (rule.iRule == 1) // SOLID
 		{
-			if ((0 <= _x && _x < iFieldsX) && (0 <= _y && _y < iFieldsY)){
+			if ((0 <= _x && _x < rule.iAreaWidth) && (0 <= _y && _y < rule.iAreaHeight)){
 				fieldArea[_x][_y].addNeighbor(_add);
 			}
 		}
@@ -233,36 +220,12 @@ public class Area extends JPanel implements MouseListener, MouseMotionListener
 			System.err.println("Falscher Regelsatz!");
 		}
 	}
-
-	public void setRun(boolean _run){
-		bRun = _run;
-	}
-	
-	public boolean run(){
-		return bRun;
-	}
-	
-	public void setRuleset(int _rule){
-		iRuleset = _rule;
-	}
-	
-	public int ruleset(){
-		return iRuleset;
-	}
-	
-	public void setSpeed(int _speed){
-		iSpeed = _speed;
-	}
-	
-	public int speed(){
-		return iSpeed;
-	}
 	
 	public void clearHighlights()
 	{
-		for (int iY=0; iY < iFieldsY; iY++)
+		for (int iY=0; iY < rule.iAreaHeight; iY++)
 		{
-			for (int iX=0; iX < iFieldsX; iX++)
+			for (int iX=0; iX < rule.iAreaWidth; iX++)
 			{
 				fieldArea[iX][iY].setHighlight(false);
 			}
@@ -271,10 +234,10 @@ public class Area extends JPanel implements MouseListener, MouseMotionListener
 	
 	public void mouseClicked(MouseEvent event)
 	{
-		if (!bRun)
+		if (!rule.bRun)
 		{
-			int fieldX = (event.getX()-1)/iFieldsize;
-			int fieldY = (event.getY()-1)/iFieldsize;
+			int fieldX = (event.getX()-1)/rule.iFieldsize;
+			int fieldY = (event.getY()-1)/rule.iFieldsize;
 			
 			ArrayList<Point> brush = myBrushes.currentBrush();
 			
@@ -283,10 +246,10 @@ public class Area extends JPanel implements MouseListener, MouseMotionListener
 				int iX = fieldX+curPoint.x;
 				int iY = fieldY+curPoint.y;
 				
-				if (iRuleset == 0){ // TORUS
+				if (rule.iRule == 0){ // TORUS
 				
-					iX = (iX+iFieldsX)%iFieldsX;
-					iY = (iY+iFieldsY)%iFieldsY;
+					iX = (iX+rule.iAreaWidth)%rule.iAreaWidth;
+					iY = (iY+rule.iAreaHeight)%rule.iAreaHeight;
 					
 					if (myBrushes.drawmode()) {
 						fieldArea[iX][iY].grow();
@@ -296,9 +259,9 @@ public class Area extends JPanel implements MouseListener, MouseMotionListener
 					}
 					
 				}
-				else if (iRuleset == 1){ // SOLID
+				else if (rule.iRule == 1){ // SOLID
 					
-					if ((0 <= iX && iX < iFieldsX) && (0 <= iY && iY < iFieldsY)){
+					if ((0 <= iX && iX < rule.iAreaWidth) && (0 <= iY && iY < rule.iAreaHeight)){
 						if (myBrushes.drawmode()) {
 							fieldArea[iX][iY].grow();
 						}
@@ -319,10 +282,10 @@ public class Area extends JPanel implements MouseListener, MouseMotionListener
 
 	public void mouseMoved(MouseEvent event)
 	{
-		if (!bRun)
+		if (!rule.bRun)
 		{
-			int fieldX = (event.getX()-1)/iFieldsize;
-			int fieldY = (event.getY()-1)/iFieldsize;
+			int fieldX = (event.getX()-1)/rule.iFieldsize;
+			int fieldY = (event.getY()-1)/rule.iFieldsize;
 
 			
 			
@@ -336,14 +299,14 @@ public class Area extends JPanel implements MouseListener, MouseMotionListener
 					int iX = fieldX+curPoint.x;
 					int iY = fieldY+curPoint.y;
 					
-					if (iRuleset == 0){ // TORUS
-						iX = (iX+iFieldsX)%iFieldsX;
-						iY = (iY+iFieldsY)%iFieldsY;
+					if (rule.iRule == 0){ // TORUS
+						iX = (iX+rule.iAreaWidth)%rule.iAreaWidth;
+						iY = (iY+rule.iAreaHeight)%rule.iAreaHeight;
 						
 						fieldArea[iX][iY].setHighlight(true);
 					}
-					else if (iRuleset == 1){ // SOLID
-						if ((0 <= iX && iX < iFieldsX) && (0 <= iY && iY < iFieldsY))
+					else if (rule.iRule == 1){ // SOLID
+						if ((0 <= iX && iX < rule.iAreaWidth) && (0 <= iY && iY < rule.iAreaHeight))
 						{
 							fieldArea[iX][iY].setHighlight(true);
 						}

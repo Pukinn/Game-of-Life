@@ -17,42 +17,44 @@
 */
 
 
+
 public class gameOfLive
 {
-
+		
+	public static Ruleset ruleset;
 	public static GUI myGUI;
 	public static DialogRuleset myDiaRuleset;
 	
 	public static void main(String args[])
 	{
+		ruleset = new Ruleset();
+		myGUI = new GUI(ruleset);
 		
-		myDiaRuleset = new DialogRuleset();
-		myDiaRuleset.create();
+		myDiaRuleset = new DialogRuleset(ruleset, myGUI);
+		myDiaRuleset.createDialog();
+		myDiaRuleset.addAreaDims();
+		myDiaRuleset.addRules();
+		myDiaRuleset.showDialog();
 		
-		if (!myDiaRuleset.visible()){
+		myGUI.mainLoop();
+		
+	// MAIN LOOP
+/*		int iCounter = 0;
+		while (true)
+		{
+			try { Thread.sleep(ruleset.iSpeed);}
+			catch (InterruptedException e) {}
 			
-			myGUI = new GUI();
-			myGUI.createGUI();		
-			myGUI.show();
 			
-			
-		// MAIN LOOP
-			int iCounter = 0;
-			while (true)
+			if (ruleset.bRun)
 			{
-				try { Thread.sleep(myGUI.myArea.speed());}
-				catch (InterruptedException e) {}
-				
-				
-				if (myGUI.myArea.run())
-				{
-					myGUI.myArea.nextGeneration();	
-					iCounter++;
-					myGUI.drawGenerations(iCounter);
-				}
-				
+				myGUI.myArea.nextGeneration();	
+				iCounter++;
+				myGUI.drawGenerations(iCounter);
 			}
 			
 		}
+		*/
 	}
+	
 }

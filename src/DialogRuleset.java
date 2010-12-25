@@ -21,25 +21,28 @@ import java.awt.Dimension;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.WindowEvent;
+import java.awt.event.WindowListener;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
-import javax.swing.JSeparator;
 import javax.swing.JTextField;
 
 
-public class DialogRuleset  implements ActionListener
+public class DialogRuleset implements ActionListener,WindowListener
 {
-	private boolean bVisible;
+	
 	
 	// GUI
-	private JFrame frame;
+	JFrame frame;
 	
 	private JLabel labelArea;
 		
 	private JPanel panelArea;
+		private JLabel labelSize;
+		private JTextField fieldSize;
 		private JLabel labelWidth;
 		private JTextField fieldWidth;
 		private JLabel labelHeight;
@@ -50,55 +53,83 @@ public class DialogRuleset  implements ActionListener
 	private JPanel panelRules;
 		private JLabel labelRuleset;
 		private JButton buttonRuleset;
+		private JLabel labelSpeed;
+		private JTextField fieldSpeed;
 	
 	private JPanel panelSet;
 		private JButton buttonSet;
+		
+		
+		
+		
+		
 	
-	public DialogRuleset(){
-		bVisible = true;
+	private Ruleset ruleset;
+	private GUI gui;
+	
+	public DialogRuleset(Ruleset _r, GUI _gui){
+		ruleset = _r;
+		gui = _gui;
 	}
 	
-	public void create(){
+
+	public void createDialog(){
 		frame = new JFrame();
 		frame.setLayout(new GridLayout(0,1));
 		
 		frame.setTitle("Regeln");
-		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+	}
+	
+	public void addAreaDims(){
 		
 		// AREA SIZE
 		labelArea = new JLabel("Spielfeldgröße:");
 		frame.add(labelArea);
+	
 		
 		panelArea = new JPanel(new GridLayout(0,2));
+			labelSize = new JLabel("Feldgröße:");
+			panelArea.add(labelSize);
+			fieldSize = new JTextField((new Integer(ruleset.iFieldsize)).toString());
+			panelArea.add(fieldSize);
 			labelWidth = new JLabel("Breite:");
 			panelArea.add(labelWidth);
-			fieldWidth = new JTextField("100");
+			fieldWidth = new JTextField((new Integer(ruleset.iAreaWidth)).toString());
 			panelArea.add(fieldWidth);
 			labelHeight = new JLabel("Höhe:");
 			panelArea.add(labelHeight);
-			fieldHeight = new JTextField("50");
+			fieldHeight = new JTextField((new Integer(ruleset.iAreaHeight)).toString());
 			panelArea.add(fieldHeight);	
 		frame.add(panelArea);
+	}
+	
+	public void addRules(){
 		
 		labelRules = new JLabel("Spielregeln:");
 		frame.add(labelRules);
-
-	
-		panelRules = new JPanel();
+		
+		panelRules = new JPanel(new GridLayout(0,2));
 			labelRuleset = new JLabel("Randregel:");
 			panelRules.add(labelRuleset);
-			buttonRuleset = new JButton("Toruswelt");
+			buttonRuleset = new JButton(getBorderString());
 			buttonRuleset.setBackground(Color.lightGray);
 			buttonRuleset.addActionListener(this);
 			int height = buttonRuleset.getPreferredSize().height;
 			buttonRuleset.setPreferredSize(new Dimension(130,height));
 			panelRules.add(buttonRuleset);
+			labelSpeed = new JLabel("ms/Generation:");
+			panelRules.add(labelSpeed);
+			fieldSpeed = new JTextField((new Integer(ruleset.iSpeed)).toString());
+			panelRules.add(fieldSpeed);
 		frame.add(panelRules);
-		
+	}
+	
+	public void showDialog(){
 		
 		panelSet = new JPanel();
-			buttonSet = new JButton("Regeln Setzen");
-			buttonSet.addActionListener(this);
+		buttonSet = new JButton("Regeln Setzen");
+		buttonSet.addActionListener(this);
+		
 		panelSet.add(buttonSet);
 		
 		frame.add(panelSet);
@@ -108,8 +139,37 @@ public class DialogRuleset  implements ActionListener
 		frame.pack();
 	}
 	
-	public boolean visible(){
-		return bVisible;
+	public String getBorderString(){
+		String rule;
+		
+		if (ruleset.iRule == 0){
+			rule = "Toruswelt";
+		}
+		else if (ruleset.iRule == 1){
+			rule = "Fester Rand";
+		}
+		else {
+			System.err.println("Rand-Regelsatz nicht definiert");
+			rule = "err";
+		}
+		
+		return rule;
+	}
+	
+	public int getBorderInt(){
+		int rule = 0;
+		
+		if (buttonRuleset.getText().equals("Toruswelt")){
+			rule = 0;
+		}
+		else if (buttonRuleset.getText().equals("Fester Rand")){
+			rule = 1;
+		}
+		else {
+			System.err.println("Rand-Regelsatz nich definiert");
+		}
+		
+		return rule;
 	}
 	
 	public void actionPerformed(ActionEvent event) {
@@ -120,7 +180,30 @@ public class DialogRuleset  implements ActionListener
 		else if (event.getActionCommand().equals("Fester Rand")){
 			buttonRuleset.setText("Toruswelt");
 		}
+		else if (event.getActionCommand().equals("Regeln Setzen")){
+			
+			ruleset.iAreaHeight = Integer.parseInt(fieldHeight.getText());
+			ruleset.iAreaWidth = Integer.parseInt(fieldWidth.getText());
+			ruleset.iFieldsize = Integer.parseInt(fieldSize.getText());
+			ruleset.iRule = getBorderInt();
+			ruleset.iSpeed = Integer.parseInt(fieldSpeed.getText());
+
+			frame.dispose();
+			
+			gui.createGUI();
+			gui.show();
+		}
 		
 	}
 
+
+	public void windowActivated(WindowEvent arg0) {}
+	public void windowClosed(WindowEvent arg0) {}
+	public void windowDeactivated(WindowEvent arg0) {}
+	public void windowDeiconified(WindowEvent arg0) {}
+	public void windowIconified(WindowEvent arg0) {}
+	public void windowOpened(WindowEvent arg0) {}
+	public void windowClosing(WindowEvent arg0) {
+		System.exit(0);
+	}
 }
